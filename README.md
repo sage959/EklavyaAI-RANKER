@@ -8,7 +8,9 @@ Our pipeline fuses Lexical (BM25) and Semantic (FAISS) retrieval, cross-encoder 
 ## Quick Start: Generate the CSV Submission
 To reproduce our ranking results and generate the final `TIER3.csv` submission file, you only need to run a single command. 
 
-Command: python run_pipeline.py --precomputed
+Command:
+```bash
+python run_pipeline.py --precomputed
 
 ### Prerequisites
 - Python 3.11+
