@@ -22,7 +22,10 @@ Step 2: Open the Landing Page
 Once the server is running, double-click the index.html file to open the landing page in your web browser.
 
 Step 3: Launch the Studio
-On the landing page, click the Launch Ranking Studio button to connect to the backend and start ranking candidates!
+On the landing page, click the 
+
+          Launch Ranking Studio 
+button to connect to the backend and start ranking candidates!
 
 
 ### Prerequisites
