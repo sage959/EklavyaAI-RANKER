@@ -8,6 +8,7 @@ Our pipeline fuses Lexical (BM25) and Semantic (FAISS) retrieval, cross-encoder 
 Before running the pipeline, you must generate the pre-computed indices:
 
                python precompute_index.py
+This will create the data/ folder with all necessary BM25 and FAISS indices. This step takes ~3 minutes.
 
 ## Quick Start: Generate the CSV Submission
 To reproduce our ranking results and generate the final `TIER3.csv` submission file, you only need to run a single command. 
