@@ -10,6 +10,21 @@ To reproduce our ranking results and generate the final `TIER3.csv` submission f
      
         python run_pipeline.py --precomputed
 
+# HOW TO LAUNCH THE RANKING STUDIO UI
+To use the interactive Ranking Studio frontend, you must first start the backend API server. If you don't start the server, the "Launch Ranking Studio" button on the landing page will not work!
+
+Step 1: Start the Backend Server
+Open your terminal in the project folder and run the following command to start the API:
+               
+               uvicorn api.main:app --port 8000
+
+Step 2: Open the Landing Page
+Once the server is running, double-click the index.html file to open the landing page in your web browser.
+
+Step 3: Launch the Studio
+On the landing page, click the Launch Ranking Studio button to connect to the backend and start ranking candidates!
+
+
 ### Prerequisites
 - Python 3.11+
 - Ensure you have installed the required dependencies from `requirements.txt`:
