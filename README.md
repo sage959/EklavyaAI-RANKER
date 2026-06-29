@@ -27,10 +27,12 @@ Our pipeline evaluates candidates in 4 distinct stages to ensure speed, accuracy
 Interactive Sandbox
 Want to test how the ranking dynamically reacts to different Job Descriptions or test toggling the Semantic Search and Reranker?
 
-Try out our live Streamlit UI running on Hugging Face Spaces: Eklavya AI Sandbox
+Try out our live Streamlit UI running on Hugging Face Spaces:
+Eklavya AI Sandbox
 Sandbox Link: https://huggingface.co/spaces/sage959/eklavya-ai
 You can also run the sandbox locally via:
-streamlit run sandbox_demo.py
+
+     streamlit run sandbox_demo.py
 
 
 Determinism Guarantee
