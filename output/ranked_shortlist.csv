@@ -1,0 +1,4 @@
+candidateid,rank,score,relevance_score,production_score,technical_score,behavioral_score,reasoning
+C-001,1,71.8,0.92,0.74,0.25,0.8,"Strong JD match (6 must-haves including python, retrieval) · shipped ML systems (5.0 yrs exp) · Available fast (30d notice) · Gap: limited specific retrieval/ranking tech stack."
+C-002,2,70.6,1.0,0.35,0.6,0.74,"Strong JD match (7 must-haves including python, retrieval) · solid retrieval stack (bm25, dense retrieval) · Highly responsive (3.2h avg) · Gap: lighter on production scale evidence."
+C-003,3,13.2,0.12,0.23,0.0,0.51,Solid ML experience (1.5 yrs) · matched 1 key skills · Gap: current role lacks engineering relevance.
