@@ -1,0 +1,3203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ranking Studio — Eklavya AI</title>
+  <meta name="description"
+    content="Eklavya AI Ranking Studio — evidence-backed candidate shortlisting for Senior AI Engineer." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────── */
+    :root {
+      --bg: #F3F1ED;
+      --surface: #FBFAF7;
+      --surface-alt: #E9E5DF;
+      --text: #1E1E22;
+      --muted: #6F6B66;
+      --border: #D9D4CC;
+      --accent: #D6EA72;
+      --accent-h: #C7DD5C;
+      --accent2: #C7BDF4;
+      --accent2-d: #AEA1E8;
+      --dark: #1C1B20;
+      --dark-soft: #2A2830;
+      --dark-muted: #8A8590;
+      --dark-border: #3A3840;
+      --danger-bg: #FDECEA;
+      --danger: #C0392B;
+      --warn-bg: #FEF5E4;
+      --warn: #9A6700;
+      --ok-bg: rgba(214, 234, 114, 0.15);
+      --ok: #5A7A00;
+
+      --font-d: 'Fraunces', Georgia, serif;
+      --font-b: 'Inter', system-ui, sans-serif;
+
+      --r-sm: 8px;
+      --r-md: 12px;
+      --r-lg: 18px;
+      --r-xl: 24px;
+
+      --sh-sm: 0 1px 3px rgba(30, 30, 34, 0.06);
+      --sh-md: 0 4px 14px rgba(30, 30, 34, 0.08);
+      --sh-lg: 0 12px 36px rgba(30, 30, 34, 0.10);
+
+      --topbar-h: 62px;
+      --sidebar-w: 288px;
+      --panel-w: 420px;
+    }
+
+    /* ─── RESET ─────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      border: none;
+      background: none;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    input,
+    select {
+      font-family: inherit;
+    }
+
+    /* ─── APP SHELL ──────────────────────────────── */
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* ─── TOPBAR ─────────────────────────────────── */
+    #topbar {
+      height: var(--topbar-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+      flex-shrink: 0;
+      box-shadow: var(--sh-sm);
+      z-index: 50;
+    }
+
+    .topbar-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: var(--r-sm);
+      transition: color 0.18s, background 0.18s;
+      flex-shrink: 0;
+    }
+
+    .topbar-back:hover {
+      color: var(--text);
+      background: var(--surface-alt);
+    }
+
+    .topbar-back svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 22px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-d);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      flex-shrink: 0;
+    }
+
+    .topbar-logo-mark {
+      width: 26px;
+      height: 26px;
+      background: var(--dark);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .topbar-logo-mark svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .topbar-jd-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 5px 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .topbar-jd-chip strong {
+      color: var(--text);
+    }
+
+    .topbar-jd-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .topbar-spacer {
+      flex: 1;
+    }
+
+    .topbar-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--ok);
+      background: var(--ok-bg);
+      border: 1px solid rgba(214, 234, 114, 0.35);
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    .topbar-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ok);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    .btn-export {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--dark);
+      color: #fff;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--r-md);
+      transition: background 0.18s, transform 0.15s;
+    }
+
+    .btn-export:hover {
+      background: var(--dark-soft);
+      transform: translateY(-1px);
+    }
+
+    .btn-export svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    /* ─── APP BODY ───────────────────────────────── */
+    #app-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ─── SIDEBAR ────────────────────────────────── */
+    #sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    #sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    #sidebar::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .sidebar-section {
+      padding: 20px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* JD summary */
+    .jd-role {
+      font-family: var(--font-d);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin-bottom: 3px;
+    }
+
+    .jd-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .jd-summary {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .jd-skills-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 7px;
+    }
+
+    .jd-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .jd-skill {
+      font-size: 0.68rem;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+    }
+
+    .jd-skill.must {
+      background: rgba(214, 234, 114, 0.15);
+      color: var(--ok);
+      border-color: rgba(214, 234, 114, 0.4);
+    }
+
+    /* Controls */
+    .control-group {
+      margin-bottom: 14px;
+    }
+
+    .control-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .control-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .control-label span {
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .range-wrap {
+      position: relative;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--surface-alt);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--dark);
+      cursor: pointer;
+      border: 2px solid var(--surface);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .toggle {
+      width: 32px;
+      height: 18px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .toggle.active {
+      background: var(--dark);
+      border-color: var(--dark);
+    }
+
+    .toggle-knob {
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+    .toggle.active .toggle-knob {
+      transform: translateX(14px);
+    }
+
+    select.sort-select {
+      width: 100%;
+      padding: 7px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      font-size: 0.8125rem;
+      color: var(--text);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236F6B66' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 10px;
+    }
+
+    select.sort-select:focus {
+      outline: none;
+      border-color: var(--accent2-d);
+    }
+
+    .btn-rerank {
+      width: 100%;
+      background: var(--accent);
+      color: var(--dark);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      padding: 9px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background 0.18s, transform 0.15s;
+    }
+
+    .btn-rerank:hover {
+      background: var(--accent-h);
+      transform: translateY(-1px);
+    }
+
+    .btn-rerank svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .btn-rerank.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .btn-rerank:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .pending-badge {
+      position: absolute;
+      top: -6px;
+      right: -2px;
+      background: var(--warn);
+      color: #fff;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      letter-spacing: 0.02em;
+      animation: pulse-badge 1.5s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    @keyframes pulse-badge {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+    }
+
+    /* Pipeline stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 8px 10px;
+    }
+
+    .stat-num {
+      font-family: var(--font-d);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .stat-lbl {
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    /* Data source note */
+    .data-note {
+      background: var(--ok-bg);
+      border: 1px solid rgba(90, 122, 0, 0.2);
+      border-radius: var(--r-sm);
+      padding: 10px 12px;
+      font-size: 0.72rem;
+      color: var(--ok);
+      line-height: 1.5;
+    }
+
+    .data-note strong {
+      font-weight: 600;
+    }
+
+    /* ─── MAIN AREA ──────────────────────────────── */
+    #main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Controls bar */
+    #controls-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .controls-count {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+
+    .controls-count span {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .controls-spacer {
+      flex: 1;
+    }
+
+    .view-toggle {
+      display: flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 2px;
+    }
+
+    .view-btn {
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .view-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--sh-sm);
+    }
+
+    /* ─── CANDIDATE LIST ─────────────────────────── */
+    #candidate-list-wrap {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    #candidate-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #candidate-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    #candidate-list::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    /* Candidate row */
+    .cand-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 28px 36px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      cursor: pointer;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.15s;
+      position: relative;
+    }
+
+    .cand-row:hover {
+      border-color: var(--accent2);
+      box-shadow: var(--sh-sm);
+    }
+
+    .cand-row.selected {
+      border-color: var(--dark);
+      background: #fff;
+      box-shadow: var(--sh-md);
+    }
+
+    .cand-row.selected::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 12px;
+      bottom: 12px;
+      width: 3px;
+      border-radius: 0 2px 2px 0;
+      background: var(--dark);
+    }
+
+    .cand-rank {
+      font-family: var(--font-d);
+      font-size: 0.9rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .cand-rank.top {
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .cand-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--muted);
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .cand-row.rank-1 .cand-avatar {
+      background: rgba(214, 234, 114, 0.2);
+      border-color: rgba(214, 234, 114, 0.5);
+      color: var(--ok);
+    }
+
+    .cand-row.rank-2 .cand-avatar {
+      background: rgba(199, 189, 244, 0.15);
+      border-color: rgba(199, 189, 244, 0.4);
+      color: var(--accent2-d);
+    }
+
+    .cand-body {
+      min-width: 0;
+    }
+
+    .cand-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .cand-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cand-open-badge {
+      font-size: 0.62rem;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 100px;
+      background: rgba(214, 234, 114, 0.2);
+      color: var(--ok);
+      border: 1px solid rgba(214, 234, 114, 0.4);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .cand-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cand-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 5px;
+    }
+
+    .skill-chip {
+      font-size: 0.63rem;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 100px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .skill-chip.matched {
+      background: rgba(199, 189, 244, 0.15);
+      border-color: rgba(199, 189, 244, 0.4);
+      color: var(--accent2-d);
+    }
+
+    .cand-reasoning {
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-left: 2px solid var(--accent2);
+      padding-left: 8px;
+    }
+
+    .cand-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .score-pill {
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 100px;
+      line-height: 1;
+    }
+
+    .score-high {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    .score-mid {
+      background: rgba(199, 189, 244, 0.25);
+      color: var(--accent2-d);
+      border: 1px solid rgba(199, 189, 244, 0.45);
+    }
+
+    .score-ok {
+      background: var(--warn-bg);
+      color: var(--warn);
+      border: 1px solid rgba(154, 103, 0, 0.2);
+    }
+
+    .score-low {
+      background: var(--surface-alt);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .cand-signals {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .sig-chip {
+      font-size: 0.62rem;
+      padding: 2px 7px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--bg);
+      white-space: nowrap;
+    }
+
+    /* ─── DETAIL PANEL ───────────────────────────── */
+    #detail-panel {
+      width: 0;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+      overflow-x: hidden;
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #detail-panel.open {
+      width: var(--panel-w);
+    }
+
+    #detail-panel::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    #detail-panel::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    #detail-inner {
+      width: var(--panel-w);
+      padding: 0;
+    }
+
+    .detail-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 5;
+    }
+
+    .detail-header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .detail-name-block {}
+
+    .detail-name {
+      font-family: var(--font-d);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin-bottom: 3px;
+    }
+
+    .detail-subtitle {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .detail-close {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--r-sm);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+
+    .detail-close:hover {
+      background: var(--surface-alt);
+    }
+
+    .detail-close svg {
+      width: 12px;
+      height: 12px;
+      color: var(--muted);
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-shortlist {
+      flex: 1;
+      background: var(--accent);
+      color: var(--dark);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: var(--r-sm);
+      text-align: center;
+      transition: background 0.18s, transform 0.15s;
+    }
+
+    .btn-shortlist:hover {
+      background: var(--accent-h);
+      transform: translateY(-1px);
+    }
+
+    .btn-view-profile {
+      flex: 1;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border);
+      text-align: center;
+      transition: background 0.18s;
+    }
+
+    .btn-view-profile:hover {
+      background: var(--surface-alt);
+    }
+
+    .detail-body {
+      padding: 0 20px 24px;
+    }
+
+    .detail-section {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-section:last-child {
+      border-bottom: none;
+    }
+
+    .detail-section-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* Score bars */
+    .score-bar-row {
+      margin-bottom: 10px;
+    }
+
+    .score-bar-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .score-bar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .score-bar-name {
+      font-size: 0.76rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .score-bar-val {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .score-bar-track {
+      height: 5px;
+      background: var(--surface-alt);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+      background: var(--accent);
+    }
+
+    .score-bar-fill.lav {
+      background: var(--accent2);
+    }
+
+    /* Strength / gap items */
+    .point-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .point-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .point-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .point-icon.ok {
+      background: rgba(214, 234, 114, 0.2);
+    }
+
+    .point-icon.ok svg {
+      color: var(--ok);
+    }
+
+    .point-icon.gap {
+      background: rgba(192, 57, 43, 0.08);
+    }
+
+    .point-icon.gap svg {
+      color: var(--danger);
+    }
+
+    .point-text.ok {
+      color: var(--text);
+    }
+
+    .point-text.gap {
+      color: var(--muted);
+    }
+
+    /* Evidence chunks */
+    .evidence-chunk {
+      background: rgba(28, 27, 32, 0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 10px 12px;
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.6;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .evidence-chunk:last-child {
+      margin-bottom: 0;
+    }
+
+    .evidence-bar {
+      width: 2px;
+      background: var(--accent2);
+      border-radius: 2px;
+      flex-shrink: 0;
+      align-self: stretch;
+      min-height: 14px;
+    }
+
+    /* Behavioral grid */
+    .signals-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .signal-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 9px 11px;
+    }
+
+    .signal-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .signal-lbl {
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    .signal-good {
+      color: var(--ok);
+    }
+
+    .signal-warn {
+      color: var(--warn);
+    }
+
+    .signal-bad {
+      color: var(--danger);
+    }
+
+    /* Career history */
+    .career-item {
+      margin-bottom: 14px;
+    }
+
+    .career-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .career-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .career-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--surface);
+      outline: 1px solid var(--border);
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .career-body {}
+
+    .career-role {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .career-co {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .career-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.55;
+      padding-left: 16px;
+    }
+
+    /* ─── EMPTY STATE ────────────────────────────── */
+    #detail-empty {
+      width: var(--panel-w);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .empty-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--r-lg);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .empty-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--muted);
+    }
+
+    .empty-title {
+      font-family: var(--font-d);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .empty-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 220px;
+    }
+
+    /* ─── LOADING OVERLAY ─────────────────────────── */
+    #loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(251, 250, 247, 0.85);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    #loading-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .loading-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 36px 44px;
+      text-align: center;
+      box-shadow: var(--sh-lg);
+      max-width: 320px;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid var(--surface-alt);
+      border-top-color: var(--dark);
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 18px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-title {
+      font-family: var(--font-d);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .loading-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .loading-steps {
+      margin-top: 18px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .loading-step {
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .loading-step.done {
+      color: var(--ok);
+    }
+
+    .loading-step-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .loading-step.done .loading-step-dot {
+      background: var(--ok);
+    }
+
+    .loading-step.active .loading-step-dot {
+      background: var(--accent);
+      animation: pulse 1s infinite;
+    }
+
+    /* ─── SHORTLIST TOAST ─────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--dark);
+      color: #fff;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 100px;
+      box-shadow: var(--sh-md);
+      z-index: 300;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #toast .toast-check {
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    #toast .toast-check svg {
+      width: 9px;
+      height: 9px;
+    }
+
+    /* ─── CUSTOM JD MODE ─────────────────────────── */
+    .jd-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-edit-jd {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      padding: 9px 16px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--accent-h);
+      background: var(--accent);
+      color: var(--dark);
+      transition: all 0.18s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-edit-jd:hover {
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .btn-edit-jd.active {
+      background: var(--accent);
+      color: var(--dark);
+      border-color: var(--accent-h);
+    }
+
+    .custom-jd-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 100px;
+      background: var(--accent);
+      color: var(--dark);
+      letter-spacing: 0.03em;
+    }
+
+    #custom-jd-form {
+      margin-top: 10px;
+      display: none;
+    }
+
+    #custom-jd-form.visible {
+      display: block;
+    }
+
+    #custom-jd-textarea {
+      width: 100%;
+      min-height: 120px;
+      max-height: 280px;
+      resize: vertical;
+      font-family: var(--font-b);
+      font-size: 0.78rem;
+      line-height: 1.5;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.18s;
+    }
+
+    #custom-jd-textarea:focus {
+      border-color: var(--accent-h);
+    }
+
+    #custom-jd-textarea::placeholder {
+      color: var(--muted);
+    }
+
+    .custom-jd-btn-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .custom-jd-btn-row button {
+      flex: 1;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 7px 8px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--muted);
+      transition: all 0.18s;
+      cursor: pointer;
+    }
+
+    .custom-jd-btn-row button:hover {
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .custom-jd-btn-row .btn-apply-jd {
+      background: var(--dark);
+      color: #fff;
+      border-color: var(--dark);
+    }
+
+    .custom-jd-btn-row .btn-apply-jd:hover {
+      background: var(--dark-soft);
+    }
+
+    .custom-jd-btn-row .btn-apply-jd:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+
+    /* ─── UPLOAD ZONE ────────────────────────────── */
+    .upload-zone {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px;
+      border: 1.5px dashed var(--border);
+      border-radius: var(--r-sm);
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.18s;
+      text-align: center;
+      justify-content: center;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--accent-h);
+      background: var(--surface-alt);
+      color: var(--text);
+    }
+
+    .upload-zone svg {
+      flex-shrink: 0;
+      opacity: 0.5;
+    }
+
+    .upload-file-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .upload-file-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 100px;
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .upload-file-chip .remove-file {
+      cursor: pointer;
+      opacity: 0.5;
+      font-size: 0.8rem;
+      line-height: 1;
+    }
+
+    .upload-file-chip .remove-file:hover {
+      opacity: 1;
+      color: var(--danger);
+    }
+
+    .upload-drive-input {
+      width: 100%;
+      font-family: var(--font-b);
+      font-size: 0.72rem;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.18s;
+    }
+
+    .upload-drive-input:focus {
+      border-color: var(--accent-h);
+    }
+
+    .upload-drive-input::placeholder {
+      color: var(--muted);
+      font-size: 0.68rem;
+    }
+
+    .upload-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 100px;
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────── */
+    @media (max-width: 900px) {
+      :root {
+        --sidebar-w: 0px;
+        --panel-w: 340px;
+      }
+
+      #sidebar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      :root {
+        --panel-w: 100vw;
+      }
+
+      #detail-panel.open {
+        position: fixed;
+        inset: var(--topbar-h) 0 0 0;
+        width: 100% !important;
+        z-index: 100;
+      }
+
+      .cand-row {
+        grid-template-columns: 28px 36px 1fr auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+
+    <!-- ═══ TOPBAR ══════════════════════════════════ -->
+    <header id="topbar">
+      <a href="index.html" class="topbar-back" aria-label="Back to landing page">
+        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M9 3L5 7L9 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        Overview
+      </a>
+
+      <div class="topbar-divider" aria-hidden="true"></div>
+
+      <div class="topbar-logo" aria-label="Eklavya AI">
+        <div class="topbar-logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M3 4L8 2L13 4V9C13 11.5 10.5 13.5 8 14C5.5 13.5 3 11.5 3 9V4Z" fill="#D6EA72" opacity="0.9" />
+            <circle cx="8" cy="8.5" r="2" fill="#1C1B20" />
+          </svg>
+        </div>
+        Eklavya AI
+      </div>
+
+      <div class="topbar-jd-chip" id="topbar-jd-chip" aria-label="Active job">
+        <div class="topbar-jd-dot" aria-hidden="true"></div>
+        <span id="topbar-jd-text">Loading…</span>
+      </div>
+
+      <div class="topbar-spacer"></div>
+
+      <div class="topbar-status" id="topbar-status" aria-label="Status">
+        <div class="topbar-status-dot" id="topbar-status-dot" aria-hidden="true"></div>
+        <span id="topbar-status-text">Ready</span>
+      </div>
+
+      <button class="btn-export" id="export-btn" aria-label="Export TIER3 CSV"
+        title="Download TIER3 CSV (candidateid, rank, score, reasoning)">
+        <svg viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <path d="M6.5 1.5V8.5M6.5 8.5L4 6M6.5 8.5L9 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M2 10H11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+        Export CSV
+      </button>
+      <button class="btn-export" id="debug-export-btn" aria-label="Export debug CSV"
+        title="Download detailed debug CSV with all columns" style="font-size:0.72rem;padding:6px 12px;opacity:0.7;">
+        <svg viewBox="0 0 13 13" fill="none" aria-hidden="true" style="width:11px;height:11px;">
+          <path d="M6.5 1.5V8.5M6.5 8.5L4 6M6.5 8.5L9 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M2 10H11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+        Debug CSV
+      </button>
+    </header>
+
+    <!-- ═══ APP BODY ══════════════════════════════════ -->
+    <div id="app-body">
+
+      <!-- ═══ SIDEBAR ════════════════════════════════ -->
+      <aside id="sidebar" aria-label="Job description and ranking controls">
+
+        <!-- JD Summary — rendered dynamically from JD object -->
+        <div class="sidebar-section" id="sidebar-jd-section">
+          <div class="sidebar-section-label">Job Description</div>
+          <div class="jd-role" id="jd-role"></div>
+          <div class="jd-meta" id="jd-meta"></div>
+          <p class="jd-summary" id="jd-summary"></p>
+          <div class="jd-skills-label">Must-have</div>
+          <div class="jd-skills" id="jd-must-have" role="list"></div>
+          <div class="jd-skills-label">Nice to have</div>
+          <div class="jd-skills" id="jd-nice-to-have" role="list"></div>
+
+          <!-- Custom JD actions -->
+          <div class="jd-actions">
+            <button class="btn-edit-jd" id="btn-toggle-custom-jd">Use Custom JD</button>
+            <span class="custom-jd-badge" id="custom-jd-badge" style="display:none;">Custom</span>
+          </div>
+
+          <!-- Custom JD input form (hidden by default) -->
+          <div id="custom-jd-form">
+            <textarea id="custom-jd-textarea"
+              placeholder="Paste a full job description here...&#10;&#10;Example:&#10;Data Scientist&#10;&#10;Requirements:&#10;- 3+ years Python&#10;- Experience with ML pipelines&#10;- Strong SQL skills&#10;&#10;Nice to have:&#10;- Deep learning&#10;- Cloud experience"></textarea>
+            <div class="custom-jd-btn-row">
+              <button class="btn-apply-jd" id="btn-apply-custom-jd" disabled>Apply &amp; Rank</button>
+              <button id="btn-cancel-custom-jd">Cancel</button>
+              <button id="btn-reset-jd" style="display:none;">Reset to Original</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ranking Controls -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-label">Ranking Controls</div>
+
+          <div class="control-group">
+            <div class="control-label">Min score <span id="min-score-val">0%</span></div>
+            <input type="range" id="min-score" min="0" max="90" value="0" step="5" aria-label="Minimum score filter" />
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">Sort by</div>
+            <select class="sort-select" id="sort-by" aria-label="Sort candidates by">
+              <option value="score">Fit score (high to low)</option>
+              <option value="name">Name (A–Z)</option>
+              <option value="response">Response time (fastest)</option>
+              <option value="notice">Notice period (shortest)</option>
+              <option value="github">GitHub activity</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <div class="toggle-row">
+              <span>Open to work only</span>
+              <div class="toggle" id="open-toggle" role="switch" aria-checked="false"
+                aria-label="Show open to work candidates only" tabindex="0">
+                <div class="toggle-knob"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="position:relative;">
+            <button class="btn-rerank" id="rerank-btn" aria-label="Re-run ranking with current settings">
+              <svg viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                <path
+                  d="M2 6.5C2 4.01 4.01 2 6.5 2C8.07 2 9.46 2.79 10.3 4M11 6.5C11 8.99 8.99 11 6.5 11C4.93 11 3.54 10.21 2.7 9"
+                  stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                <path d="M10 1.5V4H12.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Re-run Ranking on Preloaded JD
+            </button>
+            <div class="pending-badge" id="pending-badge" style="display:none;">Filters changed</div>
+          </div>
+        </div>
+
+        <!-- Pipeline Stats -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-label">Pipeline stats</div>
+          <div class="stats-grid" role="list">
+            <div class="stat-chip" role="listitem">
+              <div class="stat-num" id="stat-total">—</div>
+              <div class="stat-lbl">Candidates scored</div>
+            </div>
+            <div class="stat-chip" role="listitem">
+              <div class="stat-num" id="stat-retrieval-time">—</div>
+              <div class="stat-lbl">Retrieval time</div>
+            </div>
+            <div class="stat-chip" role="listitem">
+              <div class="stat-num" id="stat-top-score">—</div>
+              <div class="stat-lbl">Top fit score</div>
+            </div>
+            <div class="stat-chip" role="listitem">
+              <div class="stat-num" id="stat-shown">—</div>
+              <div class="stat-lbl">Showing now</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Resumes -->
+        <div class="sidebar-section" id="upload-section">
+          <div class="sidebar-section-label">Upload Resumes</div>
+
+          <div class="upload-zone" id="upload-drop-zone" tabindex="0" role="button"
+            aria-label="Drop files or click to upload">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <span>Drop PDF, DOCX, or JSON — or <strong>click</strong></span>
+          </div>
+          <input type="file" id="upload-file-input" multiple accept=".pdf,.docx,.json,.jsonl" style="display:none;" />
+
+          <div id="upload-file-list" class="upload-file-list"></div>
+
+          <div class="control-group" style="margin-top:8px;">
+            <div class="control-label" style="font-size:0.72rem;">Google Drive folder URL</div>
+            <input type="text" id="upload-drive-url" class="upload-drive-input"
+              placeholder="https://drive.google.com/drive/folders/..." />
+          </div>
+
+          <div class="control-group" style="margin-top:6px;">
+            <div class="control-label">Top N <span id="upload-topn-val">15</span></div>
+            <input type="range" id="upload-topn" min="5" max="50" value="15" class="control-slider" />
+          </div>
+
+          <div class="custom-jd-btn-row" style="margin-top:10px;">
+            <button class="btn-apply-jd" id="btn-upload-rank" disabled>Upload &amp; Rank</button>
+            <button id="btn-upload-reset" style="display:none;">Reset to Dataset</button>
+          </div>
+
+          <div id="upload-status" style="display:none;font-size:0.72rem;margin-top:6px;color:var(--muted);"></div>
+        </div>
+
+        <!-- Data source note -->
+        <div class="sidebar-section">
+          <div class="data-note" id="data-source-note" role="note">
+            <strong>Live data.</strong> Showing real ranked candidates from the latest pipeline run via
+            <code>/debug/sample-output</code>.
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- ═══ MAIN AREA ══════════════════════════════ -->
+      <div id="main-area">
+
+        <!-- Controls bar -->
+        <div id="controls-bar" role="toolbar" aria-label="Candidate list controls">
+          <div class="controls-count" id="controls-count" aria-live="polite">
+            Showing <strong>0</strong> <span>candidates</span>
+          </div>
+          <div class="controls-spacer"></div>
+          <div class="view-toggle" role="group" aria-label="View mode">
+            <button class="view-btn active" id="view-list-btn" aria-pressed="true">List</button>
+            <button class="view-btn" id="view-cards-btn" aria-pressed="false">Cards</button>
+          </div>
+        </div>
+
+        <!-- List + detail -->
+        <div id="candidate-list-wrap">
+
+          <!-- Candidate list -->
+          <div id="candidate-list" role="list" aria-label="Ranked candidates">
+            <!-- Populated by JS -->
+          </div>
+
+          <!-- Detail panel -->
+          <div id="detail-panel" role="complementary" aria-label="Candidate detail">
+            <div id="detail-inner">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div id="loading-overlay" role="dialog" aria-label="Re-ranking in progress" aria-live="polite">
+    <div class="loading-card">
+      <div class="loading-spinner" aria-hidden="true"></div>
+      <div class="loading-title">Re-ranking candidates…</div>
+      <div class="loading-sub">Hybrid retrieval + cross-encoder reranking</div>
+      <div class="loading-steps" aria-hidden="true">
+        <div class="loading-step done" id="ls-1">
+          <div class="loading-step-dot"></div>Parsing job description
+        </div>
+        <div class="loading-step active" id="ls-2">
+          <div class="loading-step-dot"></div>BM25 + semantic retrieval
+        </div>
+        <div class="loading-step" id="ls-3">
+          <div class="loading-step-dot"></div>Cross-encoder reranking
+        </div>
+        <div class="loading-step" id="ls-4">
+          <div class="loading-step-dot"></div>Behavioral signal fusion
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shortlist toast -->
+  <div id="toast" role="status" aria-live="polite">
+    <div class="toast-check">
+      <svg viewBox="0 0 9 9" fill="none">
+        <path d="M1.5 4.5L3.8 7L7.5 2.5" stroke="#1C1B20" stroke-width="1.4" stroke-linecap="round"
+          stroke-linejoin="round" />
+      </svg>
+    </div>
+    <span id="toast-msg">Added to shortlist</span>
+  </div>
+
+  <script>
+    /* ════════════════════════════════════════════════
+       DATA
+    ════════════════════════════════════════════════ */
+    const JD = {
+      role: "Senior AI Engineer",
+      company: "Redrob",
+      type: "Full-time · Remote",
+      mustHave: ["Retrieval systems", "Vector search", "Python", "Production ML"],
+      niceToHave: ["Cross-encoder reranking", "RAG", "FastAPI", "LLMs", "Evaluation"],
+      experience: "4+ years",
+      summary: "We need someone who has built and shipped production-grade retrieval, ranking, or search systems — not just fine-tuned models. You should understand the full stack from embedding models to serving infrastructure."
+    };
+
+    let CANDIDATES = [];
+
+    /* ════════════════════════════════════════════════
+       JD RENDERING — Drives topbar chip + sidebar panel
+    ════════════════════════════════════════════════ */
+    function renderJD() {
+      // Topbar chip
+      const chipText = document.getElementById('topbar-jd-text');
+      if (chipText) {
+        if (JD.company) {
+          chipText.innerHTML = `<strong>${escHtml(JD.role)}</strong>&nbsp;· ${escHtml(JD.company)}`;
+        } else {
+          chipText.innerHTML = `<strong>${escHtml(JD.role)}</strong>`;
+        }
+      }
+
+      // Sidebar panel
+      const roleEl = document.getElementById('jd-role');
+      const metaEl = document.getElementById('jd-meta');
+      const summaryEl = document.getElementById('jd-summary');
+      const mustHaveEl = document.getElementById('jd-must-have');
+      const niceToHaveEl = document.getElementById('jd-nice-to-have');
+
+      if (roleEl) roleEl.textContent = JD.role;
+      if (metaEl) {
+        const parts = [JD.company, JD.type, JD.experience].filter(Boolean);
+        metaEl.textContent = parts.join(' · ') || 'Custom job description';
+      }
+      if (summaryEl) summaryEl.textContent = JD.summary;
+      if (mustHaveEl) {
+        mustHaveEl.innerHTML = JD.mustHave.map(s =>
+          `<span class="jd-skill must" role="listitem">${escHtml(s)}</span>`
+        ).join('');
+      }
+      if (niceToHaveEl) {
+        niceToHaveEl.innerHTML = JD.niceToHave.map(s =>
+          `<span class="jd-skill" role="listitem">${escHtml(s)}</span>`
+        ).join('');
+      }
+    }
+
+    /* ════════════════════════════════════════════════
+       STATUS PILL — State-driven (ready/ranking/complete/failed)
+    ════════════════════════════════════════════════ */
+    function setStatusPill(status) {
+      const el = document.getElementById('topbar-status');
+      const dot = document.getElementById('topbar-status-dot');
+      const text = document.getElementById('topbar-status-text');
+      if (!el || !text) return;
+
+      // Reset classes
+      el.style.color = '';
+      el.style.background = '';
+      el.style.borderColor = '';
+      if (dot) dot.style.background = '';
+
+      switch (status) {
+        case 'ready':
+          el.style.color = 'var(--muted)';
+          el.style.background = 'var(--surface-alt)';
+          el.style.borderColor = 'var(--border)';
+          if (dot) dot.style.background = 'var(--muted)';
+          text.textContent = 'Ready';
+          break;
+        case 'ranking':
+          el.style.color = 'var(--warn)';
+          el.style.background = 'var(--warn-bg)';
+          el.style.borderColor = 'rgba(154,103,0,0.25)';
+          if (dot) dot.style.background = 'var(--warn)';
+          text.textContent = 'Ranking\u2026';
+          break;
+        case 'complete':
+          el.style.color = 'var(--ok)';
+          el.style.background = 'var(--ok-bg)';
+          el.style.borderColor = 'rgba(214,234,114,0.35)';
+          if (dot) dot.style.background = 'var(--ok)';
+          text.textContent = 'Ranking complete';
+          break;
+        case 'failed':
+          el.style.color = 'var(--danger)';
+          el.style.background = 'var(--danger-bg)';
+          el.style.borderColor = 'rgba(192,57,43,0.2)';
+          if (dot) dot.style.background = 'var(--danger)';
+          text.textContent = 'Ranking failed';
+          break;
+      }
+    }
+
+    /* ════════════════════════════════════════════════
+       STATE
+    ════════════════════════════════════════════════ */
+    const state = {
+      selectedId: null,
+      minScore: 0,
+      openToWorkOnly: false,
+      sortBy: 'score',
+      shortlisted: new Set()
+    };
+
+    /* ════════════════════════════════════════════════
+       HELPERS
+    ════════════════════════════════════════════════ */
+    function scoreClass(s) {
+      if (s >= 85) return 'score-high';
+      if (s >= 73) return 'score-mid';
+      if (s >= 62) return 'score-ok';
+      return 'score-low';
+    }
+
+    function sigClass(val, good, bad) {
+      if (val <= good) return 'signal-good';
+      if (val >= bad) return 'signal-bad';
+      return 'signal-warn';
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    /* ════════════════════════════════════════════════
+       FILTER + SORT
+    ════════════════════════════════════════════════ */
+    function getFiltered() {
+      let list = CANDIDATES.filter(c => {
+        if (c.score < state.minScore) return false;
+        if (state.openToWorkOnly && !c.signals.openToWork) return false;
+        return true;
+      });
+      list.sort((a, b) => {
+        if (state.sortBy === 'score') return b.score - a.score;
+        if (state.sortBy === 'name') return a.name.localeCompare(b.name);
+        if (state.sortBy === 'response') return a.signals.avgResponseHours - b.signals.avgResponseHours;
+        if (state.sortBy === 'notice') return a.signals.noticeDays - b.signals.noticeDays;
+        if (state.sortBy === 'github') return b.signals.githubScore - a.signals.githubScore;
+        return 0;
+      });
+      return list;
+    }
+
+    /* ════════════════════════════════════════════════
+       RENDER CANDIDATE ROW
+    ════════════════════════════════════════════════ */
+    function renderRow(c, rank) {
+      const isSelected = state.selectedId === c.id;
+      const sigs = c.signals;
+
+      const matchedSet = new Set(c.matchedSkills);
+      const skillsHtml = c.skills.slice(0, 5).map(s =>
+        `<span class="skill-chip ${matchedSet.has(s) ? 'matched' : ''}">${escHtml(s)}</span>`
+      ).join('');
+
+      const sigChips = [
+        sigs.openToWork ? `<span class="sig-chip" style="color:var(--ok);background:var(--ok-bg);border-color:rgba(214,234,114,0.35);">Open to work</span>` : '',
+        `<span class="sig-chip">${sigs.noticeDays}d notice</span>`,
+        `<span class="sig-chip">${sigs.avgResponseHours}h resp.</span>`
+      ].filter(Boolean).join('');
+
+      return `
+      <div class="cand-row ${isSelected ? 'selected' : ''} rank-${rank}"
+           role="listitem"
+           aria-label="Rank ${rank}: ${c.name}, ${c.score}% fit"
+           data-id="${c.id}"
+           tabindex="0">
+        <div class="cand-rank ${rank <= 3 ? 'top' : ''}" aria-hidden="true">#${rank}</div>
+        <div class="cand-avatar" aria-hidden="true">${escHtml(c.avatar)}</div>
+        <div class="cand-body">
+          <div class="cand-name-row">
+            <div class="cand-name">${escHtml(c.name)}</div>
+            ${sigs.openToWork ? `<div class="cand-open-badge">Open to work</div>` : ''}
+          </div>
+          <div class="cand-meta"><span style="font-family: monospace; background: var(--bg); border: 1px solid var(--border); padding: 1px 4px; border-radius: 4px; font-size: 0.65rem; color: var(--muted);">${escHtml(c.id)}</span> · ${escHtml(c.title)} · ${escHtml(c.company)} · ${escHtml(c.location)} · ${escHtml(c.experience)}</div>
+          <div class="cand-skills">${skillsHtml}</div>
+          <div class="cand-reasoning">${escHtml(c.reasoningPreview)}</div>
+        </div>
+        <div class="cand-right">
+          <div class="score-pill ${scoreClass(c.score)}" aria-label="${c.score}% fit score">${c.score}%</div>
+          <div class="cand-signals">${sigChips}</div>
+        </div>
+      </div>
+    `;
+    }
+
+    /* ════════════════════════════════════════════════
+       RENDER CANDIDATE LIST
+    ════════════════════════════════════════════════ */
+    function renderList() {
+      const list = getFiltered();
+      const el = document.getElementById('candidate-list');
+      const countEl = document.getElementById('controls-count');
+      const statShown = document.getElementById('stat-shown');
+
+      if (list.length === 0) {
+        el.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;text-align:center;padding:40px;">
+          <div class="empty-icon" style="margin-bottom:14px;"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M9 12H15M12 9V15" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+          <div class="empty-title">No candidates match</div>
+          <div class="empty-sub">Try lowering the minimum score filter or removing the open-to-work restriction.</div>
+        </div>`;
+      } else {
+        el.innerHTML = list.map((c, i) => renderRow(c, i + 1)).join('');
+      }
+
+      countEl.innerHTML = `Showing <strong>${list.length}</strong> <span>of ${CANDIDATES.length} candidates</span>`;
+      if (statShown) statShown.textContent = list.length;
+
+      // Attach click handlers
+      el.querySelectorAll('.cand-row').forEach(row => {
+        const handler = () => {
+          const id = row.dataset.id;
+          if (state.selectedId === id) {
+            state.selectedId = null;
+            closeDetail();
+          } else {
+            state.selectedId = id;
+            openDetail(id);
+          }
+          renderList();
+        };
+        row.addEventListener('click', handler);
+        row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
+      });
+    }
+
+    /* ════════════════════════════════════════════════
+       DETAIL PANEL
+    ════════════════════════════════════════════════ */
+    function openDetail(id) {
+      const c = CANDIDATES.find(x => x.id === id);
+      if (!c) return;
+
+      const panel = document.getElementById('detail-panel');
+      const inner = document.getElementById('detail-inner');
+      panel.classList.add('open');
+
+      const s = c.signals;
+      const isShortlisted = state.shortlisted.has(c.id);
+
+      const strengthsHtml = c.strengths.map(p => `
+      <div class="point-item">
+        <div class="point-icon ok">
+          <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5L3.5 6.5L7 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="point-text ok">${escHtml(p)}</span>
+      </div>`).join('');
+
+      const gapsHtml = c.gaps.map(p => `
+      <div class="point-item">
+        <div class="point-icon gap">
+          <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M2 2L7 7M7 2L2 7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <span class="point-text gap">${escHtml(p)}</span>
+      </div>`).join('');
+
+      const evidenceHtml = c.evidence.map(e => `
+      <div class="evidence-chunk">
+        <div class="evidence-bar"></div>
+        <span>${escHtml(e)}</span>
+      </div>`).join('');
+
+      const careerHtml = c.careerHistory.map(h => `
+      <div class="career-item">
+        <div class="career-header">
+          <div class="career-dot"></div>
+          <div class="career-body">
+            <div class="career-role">${escHtml(h.role)}</div>
+            <div class="career-co">${escHtml(h.company)} · ${escHtml(h.period)}</div>
+          </div>
+        </div>
+        <div class="career-note">${escHtml(h.note)}</div>
+      </div>`).join('');
+
+      const responseClass = sigClass(s.avgResponseHours, 3, 7);
+      const noticeClass = sigClass(s.noticeDays, 30, 75);
+      const githubClass = s.githubScore >= 70 ? 'signal-good' : s.githubScore >= 50 ? 'signal-warn' : 'signal-bad';
+      const rateClass = s.responseRate >= 80 ? 'signal-good' : s.responseRate >= 65 ? 'signal-warn' : 'signal-bad';
+
+      inner.innerHTML = `
+      <div class="detail-header">
+        <div class="detail-header-top">
+          <div class="detail-name-block">
+            <div class="detail-name">${escHtml(c.name)}</div>
+            <div class="detail-subtitle"><span style="font-family: monospace; background: var(--bg); border: 1px solid var(--border); padding: 1px 4px; border-radius: 4px; font-size: 0.68rem; color: var(--muted);">${escHtml(c.id)}</span> · ${escHtml(c.title)} · ${escHtml(c.company)} · ${escHtml(c.experience)}</div>
+          </div>
+          <button class="detail-close" id="detail-close-btn" aria-label="Close detail panel">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <path d="M2 2L10 10M10 2L2 10"/>
+            </svg>
+          </button>
+        </div>
+        <div class="detail-actions">
+          <button class="btn-shortlist ${isShortlisted ? 'shortlisted' : ''}" id="detail-shortlist-btn"
+            style="${isShortlisted ? 'background:var(--surface-alt);color:var(--muted);' : ''}"
+            aria-label="${isShortlisted ? 'Remove from shortlist' : 'Add to shortlist'}">
+            ${isShortlisted ? '✓ Shortlisted' : 'Shortlist candidate'}
+          </button>
+          <button class="btn-view-profile" aria-label="View full profile for ${escHtml(c.name)}">View profile</button>
+        </div>
+      </div>
+
+      <div class="detail-body">
+
+        <div class="detail-section">
+          <div class="detail-section-title">Score breakdown · ${c.score}% overall fit</div>
+          <div class="score-bar-row">
+            <div class="score-bar-header">
+              <span class="score-bar-name">Semantic similarity</span>
+              <span class="score-bar-val">${c.scores.semantic}%</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:0%" data-target="${c.scores.semantic}"></div></div>
+          </div>
+          <div class="score-bar-row">
+            <div class="score-bar-header">
+              <span class="score-bar-name">BM25 keyword fit</span>
+              <span class="score-bar-val">${c.scores.bm25}%</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill lav" style="width:0%" data-target="${c.scores.bm25}"></div></div>
+          </div>
+          <div class="score-bar-row">
+            <div class="score-bar-header">
+              <span class="score-bar-name">Cross-encoder rerank</span>
+              <span class="score-bar-val">${c.scores.crossEncoder}%</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:0%" data-target="${c.scores.crossEncoder}"></div></div>
+          </div>
+          <div class="score-bar-row">
+            <div class="score-bar-header">
+              <span class="score-bar-name">Behavioral signals</span>
+              <span class="score-bar-val">${c.scores.behavioral}%</span>
+            </div>
+            <div class="score-bar-track"><div class="score-bar-fill lav" style="width:0%" data-target="${c.scores.behavioral}"></div></div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Why this candidate fits</div>
+          <div class="point-list">${strengthsHtml}</div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Gaps identified</div>
+          <div class="point-list">${gapsHtml}</div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Evidence from profile</div>
+          ${evidenceHtml}
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Behavioral signals</div>
+          <div class="signals-grid">
+            <div class="signal-card">
+              <div class="signal-val ${responseClass}">${s.avgResponseHours}h</div>
+              <div class="signal-lbl">Avg response time</div>
+            </div>
+            <div class="signal-card">
+              <div class="signal-val ${noticeClass}">${s.noticeDays}d</div>
+              <div class="signal-lbl">Notice period</div>
+            </div>
+            <div class="signal-card">
+              <div class="signal-val ${githubClass}">${s.githubScore}<span style="font-size:0.7rem;font-weight:400;color:var(--muted)">/100</span></div>
+              <div class="signal-lbl">GitHub activity</div>
+            </div>
+            <div class="signal-card">
+              <div class="signal-val ${rateClass}">${s.responseRate}%</div>
+              <div class="signal-lbl">Recruiter response rate</div>
+            </div>
+            <div class="signal-card">
+              <div class="signal-val">${s.interviewRate}%</div>
+              <div class="signal-lbl">Interview completion</div>
+            </div>
+            <div class="signal-card">
+              <div class="signal-val">${s.savedCount}</div>
+              <div class="signal-lbl">Saved by recruiters (30d)</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:0.72rem;color:var(--muted);">
+            Last active: ${escHtml(s.lastActive)} · ${s.openToWork ? '<span style="color:var(--ok);font-weight:600;">Open to work</span>' : '<span>Not actively looking</span>'}
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Career history</div>
+          ${careerHtml}
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">Education</div>
+          <div style="font-size:0.8125rem;color:var(--text);">${escHtml(c.education)}</div>
+        </div>
+
+
+
+      </div>
+    `;
+
+      // Animate score bars
+      setTimeout(() => {
+        inner.querySelectorAll('.score-bar-fill[data-target]').forEach((bar, i) => {
+          setTimeout(() => { bar.style.width = bar.dataset.target + '%'; }, i * 100);
+        });
+      }, 60);
+
+      // Close button
+      document.getElementById('detail-close-btn').addEventListener('click', () => {
+        state.selectedId = null;
+        closeDetail();
+        renderList();
+      });
+
+      // Shortlist button
+      document.getElementById('detail-shortlist-btn').addEventListener('click', () => {
+        if (state.shortlisted.has(c.id)) {
+          state.shortlisted.delete(c.id);
+          showToast(`Removed ${c.name} from shortlist`);
+        } else {
+          state.shortlisted.add(c.id);
+          showToast(`${c.name} added to shortlist`);
+        }
+        openDetail(id); // re-render
+      });
+
+      // View profile (placeholder)
+      inner.querySelector('.btn-view-profile').addEventListener('click', () => {
+        showToast('Full profile view coming soon');
+      });
+    }
+
+    function closeDetail() {
+      document.getElementById('detail-panel').classList.remove('open');
+    }
+
+    /* ════════════════════════════════════════════════
+       CONTROLS — Pending state model (BUG 6 fix)
+       Controls only update local pending state.
+       Nothing re-renders until "Re-run Ranking" is clicked.
+    ════════════════════════════════════════════════ */
+
+    // Track the applied (active) filter state separately from pending
+    const appliedState = {
+      minScore: 0,
+      sortBy: 'score',
+      openToWorkOnly: false,
+    };
+
+    function hasPendingChanges() {
+      return (
+        state.minScore !== appliedState.minScore ||
+        state.sortBy !== appliedState.sortBy ||
+        state.openToWorkOnly !== appliedState.openToWorkOnly
+      );
+    }
+
+    function updatePendingBadge() {
+      const badge = document.getElementById('pending-badge');
+      if (badge) badge.style.display = hasPendingChanges() ? 'block' : 'none';
+    }
+
+    // Min score slider — pending only, no re-render
+    const slider = document.getElementById('min-score');
+    const sliderVal = document.getElementById('min-score-val');
+    slider.addEventListener('input', () => {
+      state.minScore = parseInt(slider.value);
+      sliderVal.textContent = state.minScore + '%';
+      updatePendingBadge();
+    });
+
+    // Sort by — pending only, no re-render
+    document.getElementById('sort-by').addEventListener('change', e => {
+      state.sortBy = e.target.value;
+      updatePendingBadge();
+    });
+
+    // Open to work toggle — pending only, no re-render
+    const toggle = document.getElementById('open-toggle');
+    toggle.addEventListener('click', () => {
+      state.openToWorkOnly = !state.openToWorkOnly;
+      toggle.classList.toggle('active', state.openToWorkOnly);
+      toggle.setAttribute('aria-checked', state.openToWorkOnly);
+      updatePendingBadge();
+    });
+    toggle.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle.click(); }
+    });
+
+    /* ════════════════════════════════════════════════
+       CUSTOM JD — Toggle, Apply, Cancel, Reset
+    ════════════════════════════════════════════════ */
+
+    // Snapshot of the original preloaded JD for reset
+    const ORIGINAL_JD = Object.assign({}, JD);
+    ORIGINAL_JD.mustHave = [...JD.mustHave];
+    ORIGINAL_JD.niceToHave = [...JD.niceToHave];
+
+    let isCustomJDActive = false;
+
+    const customJDForm = document.getElementById('custom-jd-form');
+    const customJDTextarea = document.getElementById('custom-jd-textarea');
+    const btnToggleCustom = document.getElementById('btn-toggle-custom-jd');
+    const btnApplyCustom = document.getElementById('btn-apply-custom-jd');
+    const btnCancelCustom = document.getElementById('btn-cancel-custom-jd');
+    const btnResetJD = document.getElementById('btn-reset-jd');
+    const customBadge = document.getElementById('custom-jd-badge');
+
+    // Enable Apply button only when textarea has content
+    customJDTextarea.addEventListener('input', () => {
+      btnApplyCustom.disabled = customJDTextarea.value.trim().length < 20;
+    });
+
+    // Toggle form visibility
+    btnToggleCustom.addEventListener('click', () => {
+      const isVisible = customJDForm.classList.contains('visible');
+      if (isVisible) {
+        customJDForm.classList.remove('visible');
+        btnToggleCustom.classList.remove('active');
+      } else {
+        customJDForm.classList.add('visible');
+        btnToggleCustom.classList.add('active');
+        customJDTextarea.focus();
+      }
+    });
+
+    // Cancel — close form, don't change anything
+    btnCancelCustom.addEventListener('click', () => {
+      customJDForm.classList.remove('visible');
+      btnToggleCustom.classList.remove('active');
+      // Don't clear textarea — user might want to come back
+    });
+
+    // Reset to Original JD
+    btnResetJD.addEventListener('click', async () => {
+      // Restore original JD object
+      JD.role = ORIGINAL_JD.role;
+      JD.company = ORIGINAL_JD.company;
+      JD.type = ORIGINAL_JD.type;
+      JD.experience = ORIGINAL_JD.experience;
+      JD.summary = ORIGINAL_JD.summary;
+      JD.mustHave = [...ORIGINAL_JD.mustHave];
+      JD.niceToHave = [...ORIGINAL_JD.niceToHave];
+
+      isCustomJDActive = false;
+      customBadge.style.display = 'none';
+      btnResetJD.style.display = 'none';
+      customJDTextarea.value = '';
+      customJDForm.classList.remove('visible');
+      btnToggleCustom.classList.remove('active');
+      btnToggleCustom.textContent = 'Use Custom JD';
+
+      renderJD();
+
+      // Re-fetch original ranking
+      await fetchCandidates();
+      showToast('Restored original job description');
+    });
+
+    // Apply Custom JD — parse + re-rank via backend
+    btnApplyCustom.addEventListener('click', async () => {
+      const rawText = customJDTextarea.value.trim();
+      if (rawText.length < 20) return;
+
+      btnApplyCustom.disabled = true;
+      btnApplyCustom.textContent = 'Ranking…';
+      setStatusPill('ranking');
+
+      const overlay = document.getElementById('loading-overlay');
+      overlay.classList.add('active');
+
+      // Reset loading steps
+      const steps = ['ls-1', 'ls-2', 'ls-3', 'ls-4'];
+      steps.forEach(id => { document.getElementById(id).className = 'loading-step'; });
+
+      try {
+        // 1. Submit the custom JD — returns a task_id immediately
+        const submitRes = await fetch('/rank-custom-jd', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jd_text: rawText }),
+        });
+
+        if (!submitRes.ok) {
+          const errData = await submitRes.json().catch(() => ({}));
+          throw new Error(errData.detail || submitRes.statusText);
+        }
+
+        const submitData = await submitRes.json();
+        const taskId = submitData.task_id;
+        if (!taskId) throw new Error('No task_id returned from server');
+
+        // 2. Poll /task-status/{task_id} until done or error
+        const statusMap = {
+          'queued': 0,
+          'loading_indices': 1,
+          'ranking': 2,
+          'exporting': 3,
+          'done': 3,
+        };
+
+        let data = null;
+        while (true) {
+          await new Promise(r => setTimeout(r, 3000));  // poll every 3s
+
+          const pollRes = await fetch(`/task-status/${taskId}`);
+          if (!pollRes.ok) throw new Error('Failed to poll task status');
+          const poll = await pollRes.json();
+
+          // Animate loading steps based on pipeline phase
+          const stepIdx = statusMap[poll.status] ?? 0;
+          steps.forEach((id, i) => {
+            if (i < stepIdx) document.getElementById(id).className = 'loading-step done';
+            else if (i === stepIdx) document.getElementById(id).className = 'loading-step active';
+            else document.getElementById(id).className = 'loading-step';
+          });
+
+          if (poll.status === 'done') {
+            data = poll.result;
+            break;
+          }
+          if (poll.status === 'error') {
+            throw new Error(poll.error || 'Pipeline failed');
+          }
+        }
+
+        // 3. Process results (same as before)
+        // Update JD object from parsed response
+        const pjd = data.parsed_jd;
+        if (pjd) {
+          JD.role = pjd.role_title || 'Custom Role';
+          JD.company = '';  // custom JD may not have a company
+          JD.type = pjd.work_mode ? (pjd.work_mode.charAt(0).toUpperCase() + pjd.work_mode.slice(1)) : '';
+          JD.experience = pjd.min_experience_years > 0 ? `${pjd.min_experience_years}+ years` : '';
+          JD.summary = rawText.substring(0, 300);
+          JD.mustHave = pjd.must_have_skills.length > 0
+            ? pjd.must_have_skills.map(s => s.replace(/_/g, ' '))
+            : ['See custom JD'];
+          JD.niceToHave = pjd.nice_to_have_skills.map(s => s.replace(/_/g, ' '));
+        }
+
+        // Update candidates
+        const results = data.results || [];
+        CANDIDATES = buildCandidateList(results);
+
+        // Update pipeline stats
+        if (data.pipeline_meta) {
+          updatePipelineStats(data.pipeline_meta);
+        }
+
+        // Mark all loading steps done
+        steps.forEach(id => { document.getElementById(id).className = 'loading-step done'; });
+        await new Promise(r => setTimeout(r, 400));
+
+        // Render everything
+        isCustomJDActive = true;
+        customBadge.style.display = 'inline';
+        btnResetJD.style.display = 'block';
+        btnToggleCustom.textContent = 'Edit Custom JD';
+        customJDForm.classList.remove('visible');
+        btnToggleCustom.classList.remove('active');
+
+        renderJD();
+        renderList();
+        setStatusPill('complete');
+        showToast(`Ranked ${CANDIDATES.length} candidates against custom JD`);
+
+      } catch (err) {
+        console.error('Custom JD ranking failed:', err);
+        showToast('Custom JD failed: ' + err.message);
+        setStatusPill('failed');
+      } finally {
+        overlay.classList.remove('active');
+        btnApplyCustom.disabled = false;
+        btnApplyCustom.textContent = 'Apply & Rank';
+      }
+    });
+
+    /* ════════════════════════════════════════════════
+       UPLOAD RESUMES — File handling, upload, reset
+    ════════════════════════════════════════════════ */
+
+    let uploadedFiles = [];   // Array of File objects
+    let isUploadMode = false; // true when showing uploaded candidates
+
+    const uploadDropZone = document.getElementById('upload-drop-zone');
+    const uploadFileInput = document.getElementById('upload-file-input');
+    const uploadFileList = document.getElementById('upload-file-list');
+    const btnUploadRank = document.getElementById('btn-upload-rank');
+    const btnUploadReset = document.getElementById('btn-upload-reset');
+    const uploadDriveUrl = document.getElementById('upload-drive-url');
+    const uploadTopN = document.getElementById('upload-topn');
+    const uploadTopNVal = document.getElementById('upload-topn-val');
+    const uploadStatus = document.getElementById('upload-status');
+
+    // Top N slider
+    uploadTopN.addEventListener('input', () => {
+      uploadTopNVal.textContent = uploadTopN.value;
+    });
+
+    // Click to open file picker
+    uploadDropZone.addEventListener('click', () => uploadFileInput.click());
+    uploadDropZone.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); uploadFileInput.click(); }
+    });
+
+    // File input change
+    uploadFileInput.addEventListener('change', () => {
+      if (uploadFileInput.files.length > 0) {
+        for (const f of uploadFileInput.files) {
+          if (!uploadedFiles.some(uf => uf.name === f.name && uf.size === f.size)) {
+            uploadedFiles.push(f);
+          }
+        }
+        renderUploadFileList();
+      }
+      uploadFileInput.value = ''; // reset for re-selection
+    });
+
+    // Drag and drop
+    uploadDropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      uploadDropZone.classList.add('drag-over');
+    });
+    uploadDropZone.addEventListener('dragleave', () => {
+      uploadDropZone.classList.remove('drag-over');
+    });
+    uploadDropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadDropZone.classList.remove('drag-over');
+      if (e.dataTransfer.files.length > 0) {
+        for (const f of e.dataTransfer.files) {
+          const ext = f.name.split('.').pop().toLowerCase();
+          if (['pdf', 'docx', 'json', 'jsonl'].includes(ext)) {
+            if (!uploadedFiles.some(uf => uf.name === f.name && uf.size === f.size)) {
+              uploadedFiles.push(f);
+            }
+          }
+        }
+        renderUploadFileList();
+      }
+    });
+
+    function renderUploadFileList() {
+      uploadFileList.innerHTML = uploadedFiles.map((f, i) => `
+      <div class="upload-file-chip">
+        ${escHtml(f.name)}
+        <span class="remove-file" data-idx="${i}" title="Remove">&times;</span>
+      </div>
+    `).join('');
+
+      // Remove file handlers
+      uploadFileList.querySelectorAll('.remove-file').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          uploadedFiles.splice(parseInt(btn.dataset.idx), 1);
+          renderUploadFileList();
+        });
+      });
+
+      // Enable/disable upload button
+      const hasDriveUrl = uploadDriveUrl.value.trim().length > 10;
+      btnUploadRank.disabled = (uploadedFiles.length === 0 && !hasDriveUrl);
+    }
+
+    // Drive URL also enables the button
+    uploadDriveUrl.addEventListener('input', () => {
+      const hasDriveUrl = uploadDriveUrl.value.trim().length > 10;
+      btnUploadRank.disabled = (uploadedFiles.length === 0 && !hasDriveUrl);
+    });
+
+    // Upload & Rank
+    btnUploadRank.addEventListener('click', async () => {
+      if (uploadedFiles.length === 0 && uploadDriveUrl.value.trim().length < 10) return;
+
+      btnUploadRank.disabled = true;
+      btnUploadRank.textContent = 'Uploading…';
+      setStatusPill('ranking');
+
+      const overlay = document.getElementById('loading-overlay');
+      overlay.classList.add('active');
+
+      const steps = ['ls-1', 'ls-2', 'ls-3', 'ls-4'];
+      steps.forEach(id => { document.getElementById(id).className = 'loading-step'; });
+      steps.forEach((id, i) => {
+        setTimeout(() => {
+          document.getElementById(id).className = 'loading-step active';
+          if (i > 0) document.getElementById(steps[i - 1]).className = 'loading-step done';
+        }, i * 500);
+      });
+
+      try {
+        const formData = new FormData();
+
+        // Add files
+        for (const f of uploadedFiles) {
+          formData.append('files', f);
+        }
+
+        // Add Drive URL
+        formData.append('drive_url', uploadDriveUrl.value.trim());
+
+        // Add active JD text if custom JD is active
+        if (isCustomJDActive && customJDTextarea.value.trim()) {
+          formData.append('jd_text', customJDTextarea.value.trim());
+        } else {
+          formData.append('jd_text', '');
+        }
+
+        // Add top_n
+        formData.append('top_n', uploadTopN.value);
+
+        const res = await fetch('/upload-resumes', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || errData.message || res.statusText);
+        }
+
+        const data = await res.json();
+
+        if (data.status === 'error') {
+          throw new Error(data.message || 'No candidates parsed');
+        }
+
+        // Show errors if any
+        if (data.errors && data.errors.length > 0) {
+          uploadStatus.style.display = 'block';
+          uploadStatus.innerHTML = `<span style="color:var(--warn);">⚠</span> ${data.errors.length} warning(s): ${escHtml(data.errors[0])}`;
+        } else {
+          uploadStatus.style.display = 'none';
+        }
+
+        // Inject results
+        const results = data.results || [];
+        CANDIDATES = buildCandidateList(results);
+
+        if (data.pipeline_meta) {
+          updatePipelineStats(data.pipeline_meta);
+        }
+
+        steps.forEach(id => { document.getElementById(id).className = 'loading-step done'; });
+        await new Promise(r => setTimeout(r, 400));
+
+        isUploadMode = true;
+        btnUploadReset.style.display = 'block';
+        renderList();
+        setStatusPill('complete');
+        showToast(`Ranked ${data.total_parsed || results.length} uploaded candidates (showing top ${results.length})`);
+
+      } catch (err) {
+        console.error('Upload ranking failed:', err);
+        showToast('Upload failed: ' + err.message);
+        setStatusPill('failed');
+      } finally {
+        overlay.classList.remove('active');
+        btnUploadRank.disabled = false;
+        btnUploadRank.textContent = 'Upload & Rank';
+      }
+    });
+
+    // Reset to original dataset
+    btnUploadReset.addEventListener('click', async () => {
+      uploadedFiles = [];
+      renderUploadFileList();
+      uploadDriveUrl.value = '';
+      uploadStatus.style.display = 'none';
+      isUploadMode = false;
+      btnUploadReset.style.display = 'none';
+
+      // Re-fetch original dataset
+      await fetchCandidates();
+      showToast('Restored original dataset');
+    });
+
+    /* ════════════════════════════════════════════════
+       PIPELINE STATS — Live values (BUG 5 fix)
+    ════════════════════════════════════════════════ */
+    function updatePipelineStats(meta) {
+      const elTotal = document.getElementById('stat-total');
+      const elTime = document.getElementById('stat-retrieval-time');
+      const elTop = document.getElementById('stat-top-score');
+
+      if (elTotal) elTotal.textContent = meta.candidates_scored || 0;
+      if (elTime) {
+        const t = meta.retrieval_time_s;
+        elTime.textContent = (t && t > 0) ? t.toFixed(1) + 's' : '< 1s';
+      }
+      if (elTop) {
+        const pct = Math.round((meta.top_fit_score || 0) * 100);
+        elTop.textContent = pct + '%';
+      }
+    }
+
+    /* ════════════════════════════════════════════════
+       RE-RUN RANKING — Applies pending state (BUG 6)
+    ════════════════════════════════════════════════ */
+    document.getElementById('rerank-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('rerank-btn');
+      const overlay = document.getElementById('loading-overlay');
+
+      // Disable button during request
+      btn.disabled = true;
+      btn.classList.add('loading');
+      overlay.classList.add('active');
+      setStatusPill('ranking');
+
+      // Animate loading steps
+      const steps = ['ls-1', 'ls-2', 'ls-3', 'ls-4'];
+      steps.forEach(id => { document.getElementById(id).className = 'loading-step'; });
+      steps.forEach((id, i) => {
+        setTimeout(() => {
+          document.getElementById(id).className = 'loading-step active';
+          if (i > 0) document.getElementById(steps[i - 1]).className = 'loading-step done';
+        }, i * 400);
+      });
+
+      try {
+        // Apply pending state → active state
+        appliedState.minScore = state.minScore;
+        appliedState.sortBy = state.sortBy;
+        appliedState.openToWorkOnly = state.openToWorkOnly;
+
+        // Refetch live data from backend
+        const res = await fetch('/debug/sample-output');
+        if (!res.ok) throw new Error('Fetch failed: ' + res.statusText);
+        const data = await res.json();
+        const results = data.results || data;
+
+        // Rebuild candidates from fresh backend response
+        CANDIDATES = buildCandidateList(results);
+
+        // Update pipeline stats from live metadata
+        if (data.pipeline_meta) {
+          updatePipelineStats(data.pipeline_meta);
+        }
+
+        // Mark all steps done
+        steps.forEach(id => { document.getElementById(id).className = 'loading-step done'; });
+        await new Promise(r => setTimeout(r, 400));
+
+        // Render with applied filters
+        renderList();
+        updatePendingBadge();
+        setStatusPill('complete');
+      } catch (err) {
+        console.error('Re-rank failed:', err);
+        showToast('Re-rank failed: ' + err.message);
+        setStatusPill('failed');
+      } finally {
+        overlay.classList.remove('active');
+        btn.disabled = false;
+        btn.classList.remove('loading');
+      }
+    });
+
+    /* ════════════════════════════════════════════════
+       EXPORT CSV
+    ════════════════════════════════════════════════ */
+    // ── SUBMISSION CSV (candidateid, rank, score, reasoning) ──
+    document.getElementById('export-btn').addEventListener('click', () => {
+      // Use full candidate list sorted by score descending, not filtered view
+      const list = [...CANDIDATES].sort((a, b) => b.score - a.score);
+      const headers = ['candidate_id', 'rank', 'score', 'reasoning'];
+      const rows = list.map((c, i) => {
+        const rank = i + 1;
+        const score = (c.score / 100).toFixed(4); // normalize 0-100 back to 0.0-1.0
+        const reasoning = (c.reasoning || c.reasoningPreview || 'Profile analyzed.').replace(/"/g, '""');
+        return `"${c.id}",${rank},${score},"${reasoning}"`;
+      });
+
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'TIER3.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`Exported ${list.length} Top candidates`);
+    });
+
+    // ── DEBUG CSV (all columns for internal analysis) ──
+    document.getElementById('debug-export-btn').addEventListener('click', () => {
+      const list = getFiltered();
+      const headers = ['ID', 'Name', 'Title', 'Company', 'Location', 'Experience', 'Score', 'Semantic', 'BM25', 'CrossEncoder', 'Behavioral', 'OpenToWork', 'NoticeDays', 'AvgResponseHours', 'GitHubScore', 'Education'];
+      const rows = list.map(c => [
+        c.id, c.name, c.title, c.company, c.location, c.experience,
+        c.score, c.scores.semantic, c.scores.bm25, c.scores.crossEncoder, c.scores.behavioral,
+        c.signals.openToWork, c.signals.noticeDays, c.signals.avgResponseHours, c.signals.githubScore,
+        c.education
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `eklavya-debug-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`Exported ${list.length} candidates — debug format`);
+    });
+
+    /* ════════════════════════════════════════════════
+       VIEW TOGGLE (cosmetic, list is default)
+    ════════════════════════════════════════════════ */
+    document.getElementById('view-list-btn').addEventListener('click', () => {
+      document.getElementById('view-list-btn').classList.add('active');
+      document.getElementById('view-cards-btn').classList.remove('active');
+    });
+    document.getElementById('view-cards-btn').addEventListener('click', () => {
+      document.getElementById('view-cards-btn').classList.add('active');
+      document.getElementById('view-list-btn').classList.remove('active');
+      showToast('Card view coming soon — list view active');
+    });
+
+    /* ════════════════════════════════════════════════
+       INIT
+    ════════════════════════════════════════════════ */
+
+    /**
+     * Build the frontend CANDIDATES array from raw backend results.
+     * Extracted so both initial load and re-rank can reuse it.
+     */
+    function buildCandidateList(results) {
+      return results.map((r, i) => {
+        let name = r.name || 'Candidate ' + (i + 1);
+        let id = r.candidate_id || 'C-' + i;
+
+        let sigs = r.redrob_signals || {};
+        let active_signals = {
+          openToWork: sigs.open_to_work_flag !== undefined ? sigs.open_to_work_flag : true,
+          lastActive: sigs.last_active_date || "Recent",
+          responseRate: sigs.recruiter_response_rate !== undefined ? Math.round(sigs.recruiter_response_rate * 100) : 90,
+          avgResponseHours: sigs.avg_response_time_hours !== undefined ? Math.round(sigs.avg_response_time_hours) : 12,
+          noticeDays: sigs.notice_period_days !== undefined ? sigs.notice_period_days : 30,
+          githubScore: sigs.github_activity_score !== undefined ? Math.round(sigs.github_activity_score) : 50,
+          interviewRate: sigs.interview_completion_rate !== undefined ? Math.round(sigs.interview_completion_rate * 100) : 80,
+          savedCount: sigs.saved_by_recruiters_30d !== undefined ? sigs.saved_by_recruiters_30d : 5
+        };
+
+        // Score percentages (properly scaled to 0-100)
+        let finalScorePct = Math.round((r.final_score || 0) * 100);
+        let semanticPct = Math.round((r.retrieval_score || 0) * 100);
+        let bm25Pct = Math.round((r.legacy_score || 0) * 100);
+        let powPct = Math.round((r.pow_score || 0) * 100);
+        let behavioralPct = Math.round((r.behavioral_score || 0.5) * 100);
+
+        // Strengths & Gaps
+        let strengths = [];
+        if (r.explanation && Array.isArray(r.explanation.strengths)) {
+          strengths = r.explanation.strengths.map(s => s.claim);
+        } else if (r.reasoning) {
+          strengths = r.reasoning.split(' · ').filter(s => s && !s.startsWith('Gap:'));
+        }
+
+        // === GAPS: populate from multiple sources ===
+        let gaps = [];
+        if (r.explanation && Array.isArray(r.explanation.gaps) && r.explanation.gaps.length > 0) {
+          gaps = r.explanation.gaps.map(g => g.claim);
+        }
+
+        // Generate gaps from JD skills analysis if backend gaps are empty
+        if (gaps.length === 0) {
+          // Check which must-have JD skills the candidate is missing
+          const activeMusts = (isCustomJDActive && JD.mustHave.length > 0) ? JD.mustHave : JD.mustHave;
+          const candSkillsLower = (r.skills || []).map(s => s.toLowerCase());
+          const candTextLower = ((r.reasoning || '') + ' ' + (r.current_title || '')).toLowerCase();
+          const missing = activeMusts.filter(s => {
+            const sl = s.toLowerCase();
+            return !candSkillsLower.some(cs => cs.includes(sl) || sl.includes(cs))
+              && !candTextLower.includes(sl);
+          });
+          if (missing.length > 0) {
+            const shown = missing.slice(0, 3).join(', ');
+            gaps.push(`No explicit evidence for: ${shown}`);
+          }
+
+          // Low sub-score gaps
+          if (semanticPct < 30) gaps.push('Limited semantic alignment with JD requirements');
+          if (bm25Pct < 25) gaps.push('Few direct keyword matches with job description');
+          if (powPct < 20 && semanticPct > 30) gaps.push('Limited proof-of-work evidence in career history');
+
+          // Experience gap
+          const expYears = parseFloat(r.experience) || 0;
+          if (expYears > 0 && expYears < 3) {
+            gaps.push(`Limited experience (${r.experience})`);
+          }
+        }
+
+        // Fallback if still empty
+        if (gaps.length === 0) {
+          gaps.push('No major gaps identified from available profile evidence');
+        }
+
+        let warnings = [];
+        if (r.explanation && Array.isArray(r.explanation.warnings)) {
+          warnings = r.explanation.warnings;
+        }
+
+        // Skills matched — use active JD skills dynamically
+        const activeJdSkills = new Set(
+          [...JD.mustHave, ...JD.niceToHave].map(s => s.toLowerCase().replace(/_/g, ' '))
+        );
+        let candSkills = r.skills || [];
+        let matched = candSkills.filter(s => {
+          const sl = s.toLowerCase();
+          return [...activeJdSkills].some(js => sl.includes(js) || js.includes(sl));
+        });
+
+        // === EVIDENCE: populate from profile data ===
+        let evidence = [];
+        // From pow_detail
+        if (r.pow_detail && r.pow_detail.evidence_summary) {
+          evidence.push(r.pow_detail.evidence_summary);
+        }
+        // From contradiction_detail
+        if (r.contradiction_detail && Array.isArray(r.contradiction_detail.warnings)) {
+          evidence = evidence.concat(r.contradiction_detail.warnings);
+        }
+
+        // Generate evidence from available profile fields
+        if (evidence.length === 0) {
+          // Experience evidence
+          const expYears = parseFloat(r.experience) || 0;
+          if (expYears > 0) {
+            evidence.push(`${r.experience} of professional experience`);
+          }
+
+          // Current role evidence
+          if (r.current_title && r.current_company) {
+            evidence.push(`Currently working as ${r.current_title} at ${r.current_company}`);
+          } else if (r.current_title) {
+            evidence.push(`Current role: ${r.current_title}`);
+          }
+
+          // Skills evidence
+          if (matched.length > 0) {
+            const topMatched = matched.slice(0, 4).join(', ');
+            evidence.push(`JD-relevant skills found: ${topMatched}`);
+          } else if (candSkills.length > 0) {
+            const topSkills = candSkills.slice(0, 4).join(', ');
+            evidence.push(`Listed skills include: ${topSkills}`);
+          }
+
+          // Career history evidence
+          const history = r.careerHistory || [];
+          if (history.length >= 3) {
+            evidence.push(`${history.length} career roles documented in profile`);
+          } else if (history.length > 0) {
+            evidence.push(`${history.length} role(s) found in career history`);
+          }
+
+          // Education evidence
+          if (r.education && r.education !== 'Unknown') {
+            const eduShort = r.education.length > 80 ? r.education.substring(0, 77) + '...' : r.education;
+            evidence.push(`Education: ${eduShort}`);
+          }
+
+          // Score-based evidence
+          if (finalScorePct >= 60) {
+            evidence.push('Strong overall alignment with job requirements');
+          } else if (finalScorePct >= 35) {
+            evidence.push('Moderate alignment with job requirements');
+          }
+        }
+
+        // Fallback if still empty
+        if (evidence.length === 0) {
+          evidence.push('Limited profile information available for evidence extraction');
+        }
+
+        return {
+          id: id,
+          name: name,
+          avatar: name.substring(0, 2).toUpperCase(),
+          title: r.current_title || 'Software Engineer',
+          company: r.current_company || 'Unknown',
+          location: r.location ? (r.location + (r.country ? `, ${r.country}` : '')) : 'Remote',
+          experience: r.experience || '5 yrs',
+          score: finalScorePct,
+          scores: {
+            semantic: semanticPct,
+            bm25: bm25Pct,
+            crossEncoder: powPct,
+            behavioral: behavioralPct
+          },
+          signals: active_signals,
+          skills: candSkills,
+          matchedSkills: matched,
+          education: r.education || "Unknown",
+          reasoningPreview: (r.reasoning || '').substring(0, 100) + '...',
+          strengths: strengths.length ? strengths : ["Grounded JD alignment"],
+          gaps: gaps,
+          evidence: evidence,
+          careerHistory: r.careerHistory || [],
+          reasoning: r.reasoning
+        };
+      });
+    }
+
+    async function fetchCandidates() {
+      const overlay = document.getElementById('loading-overlay');
+      if (overlay) overlay.classList.add('active');
+      setStatusPill('ranking');
+      try {
+        const res = await fetch('/debug/sample-output');
+        if (!res.ok) throw new Error('Fetch failed: ' + res.statusText);
+        const data = await res.json();
+
+        if (data.status === 'no output file found') {
+          CANDIDATES = [];
+          renderList();
+          setStatusPill('ready');
+          return;
+        }
+
+        const results = data.results || data;
+        CANDIDATES = buildCandidateList(results);
+
+        // Populate pipeline stats from live metadata
+        if (data.pipeline_meta) {
+          updatePipelineStats(data.pipeline_meta);
+        }
+
+        renderList();
+        setStatusPill('complete');
+      } catch (err) {
+        console.error(err);
+        setStatusPill('failed');
+        CANDIDATES = [];
+        renderList();
+        showToast('Failed to load candidates: ' + err.message);
+      } finally {
+        if (overlay) overlay.classList.remove('active');
+      }
+    }
+
+    // ── BOOTSTRAP ──
+    renderJD();
+    setStatusPill('ready');
+    fetchCandidates();
+
+  </script>
+</body>
+
+</html>

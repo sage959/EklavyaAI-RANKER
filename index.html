@@ -1,0 +1,2994 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eklavya AI — Rank Candidates by What They've Built, Not What They Claim</title>
+  <meta name="description"
+    content="Eklavya AI is a proof-of-work candidate ranking system. Shortlist candidates by demonstrated capability, evidence-backed fit, and explainable AI reasoning — not resume keywords." />
+  <meta property="og:title" content="Eklavya AI — Evidence-Backed Candidate Ranking" />
+  <meta property="og:description" content="Stop filtering by keywords. Start ranking by proof of work." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,600&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ─────────────────────────────────────────
+       DESIGN TOKENS
+    ───────────────────────────────────────── */
+    :root {
+      --bg: #F3F1ED;
+      --surface: #FBFAF7;
+      --surface-alt: #E9E5DF;
+      --text: #1E1E22;
+      --muted: #6F6B66;
+      --border: #D9D4CC;
+      --accent: #D6EA72;
+      --accent-hover: #C7DD5C;
+      --accent2: #C7BDF4;
+      --accent2-deep: #AEA1E8;
+      --dark: #1C1B20;
+      --dark-soft: #2A2830;
+      --dark-muted: #8A8590;
+      --dark-border: #3A3840;
+
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+
+      --shadow-sm: 0 1px 3px rgba(30, 30, 34, 0.06), 0 1px 2px rgba(30, 30, 34, 0.04);
+      --shadow-md: 0 4px 16px rgba(30, 30, 34, 0.08), 0 2px 6px rgba(30, 30, 34, 0.04);
+      --shadow-lg: 0 12px 40px rgba(30, 30, 34, 0.10), 0 4px 12px rgba(30, 30, 34, 0.06);
+
+      --nav-h: 68px;
+      --max-w: 1160px;
+      --section-py: 96px;
+    }
+
+    /* ─────────────────────────────────────────
+       RESET & BASE
+    ───────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      border: none;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* ─────────────────────────────────────────
+       TYPOGRAPHY
+    ───────────────────────────────────────── */
+    .display-xl {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5.5vw, 4rem);
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+    }
+
+    .display-lg {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 600;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+    }
+
+    .display-md {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 500;
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+    }
+
+    .label-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .body-lg {
+      font-size: 1.0625rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .body-md {
+      font-size: 0.9375rem;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    /* ─────────────────────────────────────────
+       BUTTONS
+    ───────────────────────────────────────── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: var(--text);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      padding: 13px 26px;
+      border-radius: var(--radius-md);
+      transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
+      box-shadow: 0 2px 8px rgba(214, 234, 114, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(214, 234, 114, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 8px 4px;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn-primary-dark {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: var(--dark);
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 15px 32px;
+      border-radius: var(--radius-md);
+      transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
+      box-shadow: 0 2px 12px rgba(214, 234, 114, 0.25);
+    }
+
+    .btn-primary-dark:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(214, 234, 114, 0.35);
+    }
+
+    /* ─────────────────────────────────────────
+       REVEAL ANIMATIONS
+    ───────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: 0.08s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: 0.16s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: 0.24s;
+    }
+
+    .reveal-delay-4 {
+      transition-delay: 0.32s;
+    }
+
+    .reveal-delay-5 {
+      transition-delay: 0.40s;
+    }
+
+    /* ─────────────────────────────────────────
+       NAVBAR
+    ───────────────────────────────────────── */
+    #navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      background: rgba(243, 241, 237, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+    }
+
+    #navbar.scrolled {
+      border-color: var(--border);
+      background: rgba(251, 250, 247, 0.92);
+      box-shadow: 0 2px 16px rgba(30, 30, 34, 0.05);
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+
+    .logo-mark {
+      width: 30px;
+      height: 30px;
+      background: var(--dark);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: var(--surface-alt);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-cta {
+      padding: 9px 20px;
+      font-size: 0.875rem;
+    }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all 0.25s;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px 24px;
+      z-index: 99;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-menu a {
+      display: block;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+
+    .mobile-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--text);
+    }
+
+    .mobile-menu .mobile-cta {
+      margin-top: 16px;
+      display: block;
+      text-align: center;
+      border-bottom: none !important;
+    }
+
+    /* ─────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────── */
+    #hero {
+      min-height: 100svh;
+      padding-top: calc(var(--nav-h) + 48px);
+      padding-bottom: 80px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+      opacity: 0.5;
+    }
+
+    .hero-bg-orb-1 {
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, #D6EA72 0%, transparent 70%);
+      top: -80px;
+      right: -60px;
+      opacity: 0.25;
+    }
+
+    .hero-bg-orb-2 {
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, #C7BDF4 0%, transparent 70%);
+      bottom: 40px;
+      left: -80px;
+      opacity: 0.18;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 14px 5px 8px;
+      margin-bottom: 28px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .hero-badge-dot {
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .hero-badge-dot svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    .hero-headline {
+      margin-bottom: 22px;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      color: var(--dark);
+      font-weight: 300;
+    }
+
+    .hero-sub {
+      max-width: 440px;
+      margin-bottom: 36px;
+      font-size: 1.0625rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-launch {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--dark);
+      color: #fff;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--dark);
+      transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
+      box-shadow: 0 2px 10px rgba(28, 27, 32, 0.18);
+      letter-spacing: -0.01em;
+    }
+
+    .btn-launch:hover {
+      background: var(--dark-soft);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(28, 27, 32, 0.22);
+    }
+
+    .btn-launch:active {
+      transform: translateY(0);
+    }
+
+    .btn-launch .btn-launch-icon {
+      width: 26px;
+      height: 26px;
+      background: var(--accent);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.18s ease;
+    }
+
+    .btn-launch:hover .btn-launch-icon {
+      transform: rotate(6deg) scale(1.05);
+    }
+
+    .btn-launch .btn-launch-icon svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .hero-secondary-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Product Mockup */
+    .hero-mockup-wrap {
+      position: relative;
+    }
+
+    .hero-mockup {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mockup-topbar {
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mockup-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .mockup-dot-r {
+      background: #EDCEC4;
+    }
+
+    .mockup-dot-y {
+      background: #EADCA0;
+    }
+
+    .mockup-dot-g {
+      background: #BDDFB7;
+    }
+
+    .mockup-title {
+      flex: 1;
+      text-align: center;
+      font-size: 0.73rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-left: -52px;
+    }
+
+    .mockup-body {
+      padding: 18px;
+    }
+
+    .mockup-jd-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--dark);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+
+    .mockup-jd-chip span {
+      color: var(--accent);
+    }
+
+    .mockup-section-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mockup-section-label .count {
+      font-weight: 400;
+      color: var(--border);
+    }
+
+    .candidate-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .candidate-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--accent2-deep);
+    }
+
+    .candidate-rank {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .rank-1 {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    .rank-2 {
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .rank-3 {
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .candidate-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .candidate-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .candidate-meta {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin: 2px 0 6px;
+    }
+
+    .candidate-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .c-tag {
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: var(--surface-alt);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+
+    .c-tag.highlight {
+      background: rgba(199, 189, 244, 0.2);
+      color: var(--accent2-deep);
+      border-color: rgba(199, 189, 244, 0.4);
+    }
+
+    .candidate-score {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .score-pill {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+      line-height: 1;
+    }
+
+    .score-high {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    .score-mid {
+      background: rgba(199, 189, 244, 0.25);
+      color: var(--accent2-deep);
+      border: 1px solid rgba(199, 189, 244, 0.5);
+    }
+
+    .score-label {
+      font-size: 0.62rem;
+      color: var(--muted);
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .reasoning-snippet {
+      background: rgba(28, 27, 32, 0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 11px;
+      margin-top: 5px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .reasoning-snippet::before {
+      content: '';
+      width: 3px;
+      height: 100%;
+      min-height: 14px;
+      background: var(--accent2);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .mockup-float-badge {
+      position: absolute;
+      bottom: -18px;
+      left: -18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .float-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .float-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ─────────────────────────────────────────
+       CREDIBILITY STRIP
+    ───────────────────────────────────────── */
+    #credibility {
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .cred-grid {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    .cred-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 32px;
+      border-right: 1px solid var(--border);
+    }
+
+    .cred-item:last-child {
+      border-right: none;
+    }
+
+    .cred-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .cred-icon.lime {
+      background: rgba(214, 234, 114, 0.2);
+    }
+
+    .cred-icon.lav {
+      background: rgba(199, 189, 244, 0.2);
+    }
+
+    .cred-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .cred-text {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ─────────────────────────────────────────
+       PROBLEM VS SOLUTION
+    ───────────────────────────────────────── */
+    #problem {
+      padding: var(--section-py) 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-header .label-tag {
+      margin-bottom: 12px;
+    }
+
+    .section-header p {
+      max-width: 520px;
+      margin: 14px auto 0;
+    }
+
+    .pvs-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0;
+      align-items: stretch;
+    }
+
+    .pvs-vs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 28px;
+    }
+
+    .vs-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .pvs-card {
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      border: 1px solid var(--border);
+    }
+
+    .pvs-card.problem-card {
+      background: var(--surface);
+    }
+
+    .pvs-card.solution-card {
+      background: var(--dark);
+      border-color: var(--dark-border);
+      color: #fff;
+    }
+
+    .pvs-card-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .problem-card .pvs-card-label {
+      color: var(--muted);
+    }
+
+    .solution-card .pvs-card-label {
+      color: var(--accent);
+    }
+
+    .pvs-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin-bottom: 20px;
+      letter-spacing: -0.015em;
+      line-height: 1.3;
+    }
+
+    .problem-card h3 {
+      color: var(--text);
+    }
+
+    .solution-card h3 {
+      color: #fff;
+    }
+
+    .pvs-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.875rem;
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    .pvs-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .pvs-list .icon-wrap {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .problem-card .pvs-list li {
+      color: var(--muted);
+    }
+
+    .problem-card .icon-wrap {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .problem-card .icon-wrap svg {
+      color: #E57373;
+    }
+
+    .solution-card .pvs-list li {
+      color: var(--dark-muted);
+    }
+
+    .solution-card .icon-wrap {
+      background: rgba(214, 234, 114, 0.15);
+    }
+
+    .solution-card .icon-wrap svg {
+      color: var(--accent);
+    }
+
+    /* ─────────────────────────────────────────
+       HOW IT WORKS
+    ───────────────────────────────────────── */
+    #how-it-works {
+      padding: var(--section-py) 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hiw-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .hiw-card {
+      background: var(--surface);
+      padding: 36px 32px;
+      position: relative;
+    }
+
+    .hiw-step-num {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      font-weight: 300;
+      color: var(--surface-alt);
+      line-height: 1;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .hiw-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .hiw-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .hiw-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .hiw-card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .hiw-connector {
+      position: absolute;
+      top: 36px;
+      right: -1px;
+      width: 2px;
+      height: 44px;
+      background: var(--border);
+    }
+
+    /* ─────────────────────────────────────────
+       DEMO PREVIEW
+    ───────────────────────────────────────── */
+    #demo {
+      padding: var(--section-py) 0;
+    }
+
+    .demo-shell {
+      background: var(--dark);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--dark-border);
+      box-shadow: 0 24px 80px rgba(28, 27, 32, 0.2);
+    }
+
+    .demo-topbar {
+      background: var(--dark-soft);
+      border-bottom: 1px solid var(--dark-border);
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .demo-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .demo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--dark-border);
+    }
+
+    .demo-url-bar {
+      flex: 1;
+      max-width: 320px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--dark-border);
+      border-radius: var(--radius-sm);
+      padding: 5px 12px;
+      font-size: 0.73rem;
+      color: var(--dark-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .demo-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      background: rgba(214, 234, 114, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(214, 234, 114, 0.2);
+      padding: 3px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.06em;
+    }
+
+    .demo-layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      min-height: 520px;
+    }
+
+    .demo-sidebar {
+      border-right: 1px solid var(--dark-border);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .demo-sidebar-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dark-muted);
+    }
+
+    .jd-input-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--dark-border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .jd-role {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .jd-meta {
+      font-size: 0.72rem;
+      color: var(--dark-muted);
+      margin-bottom: 12px;
+    }
+
+    .jd-requirements {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .jd-req-chip {
+      font-size: 0.68rem;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 100px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--dark-muted);
+      border: 1px solid var(--dark-border);
+    }
+
+    .jd-req-chip.active {
+      background: rgba(214, 234, 114, 0.12);
+      color: var(--accent);
+      border-color: rgba(214, 234, 114, 0.25);
+    }
+
+    .demo-run-btn {
+      width: 100%;
+      background: var(--accent);
+      color: var(--dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .demo-run-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .demo-run-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .demo-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .demo-stat-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--dark-border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+    }
+
+    .demo-stat-num {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+
+    .demo-stat-label {
+      font-size: 0.65rem;
+      color: var(--dark-muted);
+    }
+
+    .demo-main {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .demo-main-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .demo-main-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--dark-muted);
+    }
+
+    .demo-main-sort {
+      font-size: 0.68rem;
+      color: var(--dark-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .demo-candidate {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--dark-border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      gap: 12px;
+      align-items: start;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .demo-candidate:hover {
+      border-color: rgba(214, 234, 114, 0.25);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .demo-candidate.top {
+      border-color: rgba(214, 234, 114, 0.2);
+      background: rgba(214, 234, 114, 0.04);
+    }
+
+    .dc-rank {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    .dc-rank.r1 {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    .dc-rank.r2 {
+      background: rgba(199, 189, 244, 0.2);
+      color: var(--accent2);
+      border: 1px solid rgba(199, 189, 244, 0.3);
+    }
+
+    .dc-rank.r3 {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--dark-muted);
+      border: 1px solid var(--dark-border);
+    }
+
+    .dc-body {}
+
+    .dc-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .dc-title {
+      font-size: 0.72rem;
+      color: var(--dark-muted);
+      margin-bottom: 8px;
+    }
+
+    .dc-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 7px;
+    }
+
+    .dc-tag {
+      font-size: 0.63rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--dark-muted);
+      border: 1px solid var(--dark-border);
+    }
+
+    .dc-tag.hi {
+      background: rgba(199, 189, 244, 0.12);
+      color: var(--accent2);
+      border-color: rgba(199, 189, 244, 0.25);
+    }
+
+    .dc-reasoning {
+      font-size: 0.7rem;
+      color: var(--dark-muted);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--dark-border);
+      border-radius: 6px;
+      padding: 7px 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.5;
+    }
+
+    .dc-reasoning-bar {
+      width: 2px;
+      background: var(--accent2);
+      border-radius: 2px;
+      flex-shrink: 0;
+      min-height: 14px;
+      align-self: stretch;
+    }
+
+    .dc-score-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 5px;
+    }
+
+    .dc-score-badge {
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 100px;
+    }
+
+    .s-high {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    .s-mid {
+      background: rgba(199, 189, 244, 0.18);
+      color: var(--accent2);
+      border: 1px solid rgba(199, 189, 244, 0.3);
+    }
+
+    .s-low {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--dark-muted);
+      border: 1px solid var(--dark-border);
+    }
+
+    .dc-score-label {
+      font-size: 0.62rem;
+      color: var(--dark-muted);
+    }
+
+    .dc-fit-bar-wrap {
+      margin-top: 4px;
+    }
+
+    .dc-fit-label {
+      font-size: 0.6rem;
+      color: var(--dark-muted);
+      margin-bottom: 3px;
+      text-align: right;
+    }
+
+    .dc-fit-bar {
+      width: 72px;
+      height: 3px;
+      background: var(--dark-border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .dc-fit-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--accent);
+    }
+
+    /* ─────────────────────────────────────────
+       EXPLAINABILITY
+    ───────────────────────────────────────── */
+    #explainability {
+      padding: var(--section-py) 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .explain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 8px;
+    }
+
+    .explain-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+
+    .explain-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .explain-card.dark-card {
+      background: var(--dark);
+      border-color: var(--dark-border);
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .explain-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .explain-icon.lime {
+      background: rgba(214, 234, 114, 0.15);
+    }
+
+    .explain-icon.lav {
+      background: rgba(199, 189, 244, 0.15);
+    }
+
+    .explain-icon.dark-icon {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .explain-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .explain-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.0625rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .explain-card.dark-card h3 {
+      color: #fff;
+    }
+
+    .explain-card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.62;
+    }
+
+    .explain-card.dark-card p {
+      color: var(--dark-muted);
+    }
+
+    .dark-card .explain-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .score-bar-item {}
+
+    .score-bar-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .score-bar-name {
+      font-size: 0.75rem;
+      color: var(--dark-muted);
+    }
+
+    .score-bar-val {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .score-bar-track {
+      height: 6px;
+      background: var(--dark-border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--accent);
+      transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .score-bar-fill.lav {
+      background: var(--accent2);
+    }
+
+    /* ─────────────────────────────────────────
+       TECH STACK
+    ───────────────────────────────────────── */
+    #tech-stack {
+      padding: var(--section-py) 0;
+    }
+
+    .tech-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .tech-left h2 {
+      margin-bottom: 16px;
+    }
+
+    .tech-left p {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .tech-arch-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 14px;
+    }
+
+    .tech-arch-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .tech-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .tech-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--accent2);
+      transform: translateY(-2px);
+    }
+
+    .tech-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .tech-card-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .tech-card-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .tech-card.featured {
+      background: var(--dark);
+      border-color: var(--dark-border);
+      grid-column: span 2;
+    }
+
+    .tech-card.featured .tech-card-name {
+      color: #fff;
+    }
+
+    .tech-card.featured .tech-card-desc {
+      color: var(--dark-muted);
+    }
+
+    /* ─────────────────────────────────────────
+       FINAL CTA
+    ───────────────────────────────────────── */
+    #final-cta {
+      padding: 96px 0;
+      background: var(--dark);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(100px);
+      opacity: 0.15;
+    }
+
+    .cta-orb-1 {
+      width: 500px;
+      height: 500px;
+      background: var(--accent);
+      top: -120px;
+      right: -80px;
+    }
+
+    .cta-orb-2 {
+      width: 380px;
+      height: 380px;
+      background: var(--accent2);
+      bottom: -100px;
+      left: -60px;
+    }
+
+    .cta-inner {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-inner .label-tag {
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .cta-inner h2 {
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .cta-inner p {
+      color: var(--dark-muted);
+      max-width: 480px;
+      margin: 0 auto 36px;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid var(--dark-border);
+      padding: 32px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--dark-muted);
+    }
+
+    .footer-logo .logo-mark {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--dark-soft);
+    }
+
+    .footer-logo .logo-mark svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .footer-copy {
+      font-size: 0.78rem;
+      color: var(--dark-border);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      font-size: 0.78rem;
+      color: var(--dark-muted);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: #fff;
+    }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .hero-headline {
+        font-size: clamp(2.2rem, 5.5vw, 3rem);
+      }
+
+      .hero-sub {
+        max-width: 100%;
+      }
+
+      .mockup-float-badge {
+        display: none;
+      }
+
+      .pvs-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .pvs-vs {
+        padding: 12px 0;
+      }
+
+      .explain-card.dark-card {
+        grid-column: span 1;
+        grid-template-columns: 1fr;
+      }
+
+      .tech-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .tech-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .tech-card.featured {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --section-py: 64px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-right .btn-primary {
+        display: none;
+      }
+
+      .nav-hamburger {
+        display: flex;
+      }
+
+      .hiw-grid {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+
+      .demo-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--dark-border);
+      }
+
+      .explain-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .explain-card.dark-card {
+        grid-column: span 1;
+      }
+
+      .tech-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cred-item {
+        padding: 10px 18px;
+        flex: 1 1 200px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .cred-item:last-child {
+        border-bottom: none;
+      }
+
+      .cred-grid {
+        flex-direction: column;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+
+      .demo-candidate {
+        grid-template-columns: 28px 1fr auto;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .tech-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tech-card.featured {
+        grid-column: span 1;
+      }
+
+      .demo-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .hero-secondary-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════
+       NAVBAR
+  ═══════════════════════════════════════ -->
+  <header id="navbar" role="banner">
+    <nav class="nav-inner" aria-label="Main navigation">
+      <a href="#" class="nav-logo" aria-label="Eklavya AI home">
+        <div class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 4L8 2L13 4V9C13 11.5 10.5 13.5 8 14C5.5 13.5 3 11.5 3 9V4Z" fill="#D6EA72" opacity="0.9" />
+            <circle cx="8" cy="8.5" r="2" fill="#1C1B20" />
+          </svg>
+        </div>
+        Eklavya AI
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#product">Product</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#tech-stack">Tech Stack</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <a href="#demo" class="btn-primary nav-cta" id="nav-try-demo">Try Demo</a>
+        <button class="nav-hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false"
+          aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+    <a href="#product">Product</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#demo">Demo</a>
+    <a href="#tech-stack">Tech Stack</a>
+    <a href="demo-app.html" class="btn-launch mobile-cta"
+      style="display:flex;border-bottom:none !important;margin-top:16px;justify-content:center;">Launch Ranking Studio
+      →</a>
+    <a href="#demo"
+      style="margin-top:8px;text-align:center;border-bottom:none !important;color:var(--muted);font-size:0.875rem;">or
+      try the inline demo</a>
+  </div>
+
+  <main>
+
+    <!-- ═══════════════════════════════════════
+         HERO
+    ═══════════════════════════════════════ -->
+    <section id="hero" aria-labelledby="hero-headline">
+      <div class="hero-bg-orb hero-bg-orb-1" aria-hidden="true"></div>
+      <div class="hero-bg-orb hero-bg-orb-2" aria-hidden="true"></div>
+
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- LEFT: Copy -->
+          <div>
+            <div class="hero-badge reveal" aria-label="New: Proof-of-Work Ranking">
+              <div class="hero-badge-dot" aria-hidden="true">
+                <svg viewBox="0 0 10 10" fill="none">
+                  <path d="M2 5L4.2 7.5L8 3" stroke="#1C1B20" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </div>
+              Proof-of-Work Candidate Ranking
+            </div>
+
+            <h1 class="display-xl hero-headline reveal reveal-delay-1" id="hero-headline">
+              Rank candidates by<br>what they've <em>built</em>,<br>not what they claim.
+            </h1>
+
+            <p class="hero-sub reveal reveal-delay-2">
+              Eklavya AI scores candidates using demonstrated capability and evidence from their actual work — not
+              keyword matches. Every shortlist comes with grounded, explainable reasoning.
+            </p>
+
+            <div class="hero-actions reveal reveal-delay-3">
+              <a href="demo-app.html" class="btn-launch" id="hero-launch-app">
+                <div class="btn-launch-icon" aria-hidden="true">
+                  <svg viewBox="0 0 13 13" fill="none">
+                    <path d="M2 6.5H11M11 6.5L7 2.5M11 6.5L7 10.5" stroke="#1C1B20" stroke-width="1.6"
+                      stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                Launch Ranking Studio
+              </a>
+            </div>
+
+            <div class="hero-secondary-actions reveal reveal-delay-4">
+              <a href="#demo" class="btn-ghost" id="hero-try-demo">
+                Try Demo
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                  <path d="M3 6.5H10M10 6.5L6.5 3M10 6.5L6.5 10" stroke="currentColor" stroke-width="1.4"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+              <a href="#how-it-works" class="btn-ghost" id="hero-see-how">
+                See how it works
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                  <path d="M6.5 2.5V10.5M6.5 10.5L3 7M6.5 10.5L10 7" stroke="currentColor" stroke-width="1.4"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- RIGHT: Product Mockup -->
+          <div class="hero-mockup-wrap reveal reveal-delay-2">
+            <div class="hero-mockup" role="img" aria-label="Eklavya AI candidate ranking interface preview">
+              <div class="mockup-topbar" aria-hidden="true">
+                <div class="mockup-dot mockup-dot-r"></div>
+                <div class="mockup-dot mockup-dot-y"></div>
+                <div class="mockup-dot mockup-dot-g"></div>
+                <div class="mockup-title">Eklavya AI — Candidate Rankings</div>
+              </div>
+              <div class="mockup-body">
+                <div class="mockup-jd-chip" aria-label="Active job: Senior ML Engineer">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <rect x="1" y="1" width="8" height="8" rx="2" stroke="#D6EA72" stroke-width="1.2" />
+                    <path d="M3 5H7M5 3V7" stroke="#D6EA72" stroke-width="1.2" stroke-linecap="round" />
+                  </svg>
+                  Active JD: <span>Senior ML Engineer</span>
+                </div>
+
+                <div class="mockup-section-label">
+                  Top candidates <span class="count">24 total</span>
+                </div>
+
+                <!-- Candidate 1 -->
+                <div class="candidate-card" role="article" aria-label="Candidate 1: Arjun Mehta, 94% fit">
+                  <div class="candidate-rank rank-1" aria-label="Rank 1">1</div>
+                  <div class="candidate-info">
+                    <div class="candidate-name">Arjun Mehta</div>
+                    <div class="candidate-meta">ML Engineer · 5 yrs · Bengaluru</div>
+                    <div class="candidate-tags">
+                      <span class="c-tag highlight">FAISS expert</span>
+                      <span class="c-tag highlight">Retrieval systems</span>
+                      <span class="c-tag">Python</span>
+                    </div>
+                    <div class="reasoning-snippet">Built production RAG pipeline handling 2M+ queries/day at Flipkart
+                    </div>
+                  </div>
+                  <div class="candidate-score">
+                    <div class="score-pill score-high" aria-label="94% fit score">94%</div>
+                    <div class="score-label">Fit score</div>
+                  </div>
+                </div>
+
+                <!-- Candidate 2 -->
+                <div class="candidate-card" role="article" aria-label="Candidate 2: Priya Nair, 87% fit">
+                  <div class="candidate-rank rank-2" aria-label="Rank 2">2</div>
+                  <div class="candidate-info">
+                    <div class="candidate-name">Priya Nair</div>
+                    <div class="candidate-meta">Research Engineer · 4 yrs · Pune</div>
+                    <div class="candidate-tags">
+                      <span class="c-tag highlight">Cross-encoder</span>
+                      <span class="c-tag">BM25</span>
+                      <span class="c-tag">PyTorch</span>
+                    </div>
+                    <div class="reasoning-snippet">Published reranking paper at ECIR 2023; strong semantic alignment
+                    </div>
+                  </div>
+                  <div class="candidate-score">
+                    <div class="score-pill score-mid" aria-label="87% fit score">87%</div>
+                    <div class="score-label">Fit score</div>
+                  </div>
+                </div>
+
+                <!-- Candidate 3 -->
+                <div class="candidate-card" role="article" aria-label="Candidate 3: Sameer Khan, 81% fit">
+                  <div class="candidate-rank rank-3" aria-label="Rank 3">3</div>
+                  <div class="candidate-info">
+                    <div class="candidate-name">Sameer Khan</div>
+                    <div class="candidate-meta">Data Scientist · 3 yrs · Mumbai</div>
+                    <div class="candidate-tags">
+                      <span class="c-tag">SentenceTransformers</span>
+                      <span class="c-tag highlight">FastAPI</span>
+                    </div>
+                  </div>
+                  <div class="candidate-score">
+                    <div class="score-pill score-mid" aria-label="81% fit score">81%</div>
+                    <div class="score-label">Fit score</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Float badge -->
+            <div class="mockup-float-badge" aria-hidden="true">
+              <div class="float-icon">
+                <svg viewBox="0 0 14 14" fill="none">
+                  <path d="M7 1L8.7 5.2H13.1L9.7 7.8L11 12L7 9.3L3 12L4.3 7.8L0.9 5.2H5.3L7 1Z" fill="#1C1B20" />
+                </svg>
+              </div>
+              <div>
+                <div style="font-weight:700;font-size:0.78rem;">Evidence-Backed</div>
+                <div style="font-size:0.68rem;color:var(--muted);margin-top:1px;">Every score is grounded</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         CREDIBILITY STRIP
+    ═══════════════════════════════════════ -->
+    <section id="credibility" aria-label="Key capabilities">
+      <div class="container">
+        <div class="cred-grid" role="list">
+          <div class="cred-item reveal" role="listitem">
+            <div class="cred-icon lime" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M3 8L6.5 11.5L13 4.5" stroke="#6F8B20" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </div>
+            <span class="cred-text">Evidence-backed ranking</span>
+          </div>
+          <div class="cred-item reveal reveal-delay-1" role="listitem">
+            <div class="cred-icon lav" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="5" stroke="#9B8FD0" stroke-width="1.5" />
+                <path d="M8 5.5V8L9.5 9.5" stroke="#9B8FD0" stroke-width="1.4" stroke-linecap="round" />
+              </svg>
+            </div>
+            <span class="cred-text">Explainable candidate reasoning</span>
+          </div>
+          <div class="cred-item reveal reveal-delay-2" role="listitem">
+            <div class="cred-icon lime" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M2 12L6 6L9 9L12 4.5" stroke="#6F8B20" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </div>
+            <span class="cred-text">Hybrid retrieval + reranking</span>
+          </div>
+          <div class="cred-item reveal reveal-delay-3" role="listitem">
+            <div class="cred-icon lav" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <rect x="3" y="3" width="4" height="4" rx="1" fill="#9B8FD0" opacity="0.6" />
+                <rect x="9" y="3" width="4" height="4" rx="1" fill="#9B8FD0" opacity="0.4" />
+                <rect x="3" y="9" width="4" height="4" rx="1" fill="#9B8FD0" opacity="0.4" />
+                <rect x="9" y="9" width="4" height="4" rx="1" fill="#9B8FD0" opacity="0.6" />
+              </svg>
+            </div>
+            <span class="cred-text">Built for modern hiring workflows</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         PROBLEM VS SOLUTION
+    ═══════════════════════════════════════ -->
+    <section id="product" aria-labelledby="pvs-heading" style="padding: var(--section-py) 0;">
+      <div class="container">
+        <div class="section-header">
+          <p class="label-tag reveal">The Problem</p>
+          <h2 class="display-lg reveal reveal-delay-1" id="pvs-heading">Resumes are claims.<br>Proof of work is
+            evidence.</h2>
+          <p class="body-lg reveal reveal-delay-2">Most ATS tools match keywords. Eklavya AI retrieves, evaluates, and
+            explains fit based on what candidates have actually done.</p>
+        </div>
+
+        <div class="pvs-grid reveal reveal-delay-1">
+          <div class="pvs-card problem-card" role="region" aria-label="The old way: keyword-based filtering">
+            <div class="pvs-card-label">The Old Way</div>
+            <h3>Keyword-based filtering misses the point</h3>
+            <ul class="pvs-list" role="list">
+              <li>
+                <div class="icon-wrap" aria-hidden="true">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2.5 2.5L7.5 7.5M7.5 2.5L2.5 7.5" stroke="#E57373" stroke-width="1.4"
+                      stroke-linecap="round" />
+                  </svg>
+                </div>
+                <span>ATS filters by keyword presence, not capability depth</span>
+              </li>
+              <li>
+                <div class="icon-wrap" aria-hidden="true">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2.5 2.5L7.5 7.5M7.5 2.5L2.5 7.5" stroke="#E57373" stroke-width="1.4"
+                      stroke-linecap="round" />
+                  </svg>
+                </div>
+                <span>Strong candidates who write plainly get silently dropped</span>
+              </li>
+              <li>
+                <div class="icon-wrap" aria-hidden="true">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2.5 2.5L7.5 7.5M7.5 2.5L2.5 7.5" stroke="#E57373" stroke-width="1.4"
+                      stroke-linecap="round" />
+                  </svg>
+                </div>
+                <span>No explanation for why a candidate was shortlisted or rejected</span>
+              </li>
+              <li>
+                <div class="icon-wrap" aria-hidden="true">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2.5 2.5L7.5 7.5M7.5 2.5L2.5 7.5" stroke="#E57373" stroke-width="1.4"
+                      stroke-linecap="round" />
+                  </svg>
+                </div>
+                <span>Rankings are opaque — recruiters must still read every resume</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pvs-vs" aria-hidden="true">
+            <div class="vs-badge">vs</div>
+          </div>
+
+          <div class="pvs-card solution-card" role="region" aria-label="Eklavya AI: evidence-backed ranking">
+            <div class="pvs-card-label">Eklavya AI</div>
+            <h3>Evidence-backed ranking you can trust</h3>
+            <ul class="pvs-list" role="list">
+              <li>
+                <div class="icon-wrap" aria-hidden="true">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2 5L4.2 7.5L8 3" stroke="#D6EA72" stroke-width="1.4" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <span>Retrieves specific evidence of skills from candidate portfolios and history</span>
+              </li>
+              <li>
+                <div class="icon-wrap" aria-hidden="true">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2 5L4.2 7.5L8 3" stroke="#D6EA72" stroke-width="1.4" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <span>Hybrid BM25 + semantic retrieval finds substance, not just phrasing</span>
+              </li>
+              <li>
+                <div class="icon-wrap" aria-hidden="true">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2 5L4.2 7.5L8 3" stroke="#D6EA72" stroke-width="1.4" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <span>Every candidate gets a grounded reason — not a black-box score</span>
+              </li>
+              <li>
+                <div class="icon-wrap" aria-hidden="true">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                    <path d="M2 5L4.2 7.5L8 3" stroke="#D6EA72" stroke-width="1.4" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <span>Recruiters spend time deciding, not reading</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         HOW IT WORKS
+    ═══════════════════════════════════════ -->
+    <section id="how-it-works" aria-labelledby="hiw-heading">
+      <div class="container">
+        <div class="section-header">
+          <p class="label-tag reveal">How It Works</p>
+          <h2 class="display-lg reveal reveal-delay-1" id="hiw-heading">Three steps from<br>JD to shortlist.</h2>
+          <p class="body-lg reveal reveal-delay-2">Paste a job description. Eklavya AI retrieves, scores, and explains —
+            in seconds.</p>
+        </div>
+
+        <div class="hiw-grid reveal reveal-delay-1" role="list">
+          <div class="hiw-card" role="listitem">
+            <div class="hiw-step-num" aria-hidden="true">01</div>
+            <div class="hiw-icon" aria-hidden="true">
+              <svg viewBox="0 0 22 22" fill="none">
+                <rect x="3" y="2" width="16" height="18" rx="3" stroke="#1E1E22" stroke-width="1.4" />
+                <path d="M7 7H15M7 10.5H15M7 14H11" stroke="#1E1E22" stroke-width="1.3" stroke-linecap="round" />
+              </svg>
+            </div>
+            <h3>Parse the JD</h3>
+            <p>The system extracts role requirements, skill signals, and contextual intent from your job description —
+              beyond surface keywords.</p>
+          </div>
+
+          <div class="hiw-card" role="listitem">
+            <div class="hiw-step-num" aria-hidden="true">02</div>
+            <div class="hiw-icon" aria-hidden="true">
+              <svg viewBox="0 0 22 22" fill="none">
+                <circle cx="11" cy="11" r="8" stroke="#1E1E22" stroke-width="1.4" />
+                <path d="M7 11H15M11 7L11 11" stroke="#1E1E22" stroke-width="1.3" stroke-linecap="round" />
+                <circle cx="11" cy="11" r="2.5" fill="#D6EA72" />
+              </svg>
+            </div>
+            <h3>Retrieve candidate evidence</h3>
+            <p>Hybrid BM25 + semantic search pulls specific evidence from candidate-centric knowledge chunks — projects,
+              outputs, and demonstrated work.</p>
+          </div>
+
+          <div class="hiw-card" role="listitem">
+            <div class="hiw-step-num" aria-hidden="true">03</div>
+            <div class="hiw-icon" aria-hidden="true">
+              <svg viewBox="0 0 22 22" fill="none">
+                <path d="M4 16L8 10L12 13L16 7" stroke="#1E1E22" stroke-width="1.4" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <circle cx="17" cy="6" r="2" fill="#C7BDF4" />
+              </svg>
+            </div>
+            <h3>Rank with explainable AI</h3>
+            <p>A cross-encoder reranker scores each candidate against the JD. The output is a ranked shortlist with
+              grounded, human-readable reasoning per candidate.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         DEMO PREVIEW
+    ═══════════════════════════════════════ -->
+    <section id="demo" aria-labelledby="demo-heading" style="padding: var(--section-py) 0;">
+      <div class="container">
+        <div class="section-header">
+          <p class="label-tag reveal">Live Demo</p>
+          <h2 class="display-lg reveal reveal-delay-1" id="demo-heading">See Eklavya AI<br>rank in real time.</h2>
+          <p class="body-lg reveal reveal-delay-2">A job description goes in. A ranked, evidence-grounded shortlist
+            comes out.</p>
+        </div>
+
+        <div class="demo-shell reveal reveal-delay-1" role="region" aria-label="Eklavya AI interactive demo">
+          <!-- Browser-style topbar -->
+          <div class="demo-topbar" aria-hidden="true">
+            <div class="demo-dots">
+              <div class="demo-dot"></div>
+              <div class="demo-dot"></div>
+              <div class="demo-dot"></div>
+            </div>
+            <div class="demo-url-bar">app.eklavya.ai/rank?jd=senior-ml-engineer</div>
+            <div class="demo-badge">LIVE DEMO</div>
+          </div>
+
+          <div class="demo-layout">
+            <!-- Sidebar: JD Input -->
+            <aside class="demo-sidebar" aria-label="Job description input">
+              <div class="demo-sidebar-label">Job Description</div>
+
+              <div class="jd-input-card">
+                <div class="jd-role">Senior ML Engineer</div>
+                <div class="jd-meta">Fintech · Full-time · Remote</div>
+                <div class="jd-requirements" role="list" aria-label="Required skills">
+                  <span class="jd-req-chip active" role="listitem">Retrieval systems</span>
+                  <span class="jd-req-chip active" role="listitem">FAISS / HNSW</span>
+                  <span class="jd-req-chip active" role="listitem">Python</span>
+                  <span class="jd-req-chip" role="listitem">Production ML</span>
+                  <span class="jd-req-chip" role="listitem">FastAPI</span>
+                  <span class="jd-req-chip" role="listitem">RAG</span>
+                  <span class="jd-req-chip" role="listitem">NLP</span>
+                </div>
+              </div>
+
+              <button class="demo-run-btn" id="demo-run-btn" aria-label="Run Eklavya AI ranking">
+                <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <polygon points="3,2 11,7 3,12" fill="#1C1B20" />
+                </svg>
+                Run Ranking
+              </button>
+
+              <div class="demo-stats" role="list" aria-label="Ranking statistics">
+                <div class="demo-stat-card" role="listitem">
+                  <div class="demo-stat-num" id="stat-candidates">24</div>
+                  <div class="demo-stat-label">Candidates scored</div>
+                </div>
+                <div class="demo-stat-card" role="listitem">
+                  <div class="demo-stat-num" id="stat-time">1.4s</div>
+                  <div class="demo-stat-label">Retrieval time</div>
+                </div>
+                <div class="demo-stat-card" role="listitem">
+                  <div class="demo-stat-num">3</div>
+                  <div class="demo-stat-label">Shortlisted</div>
+                </div>
+                <div class="demo-stat-card" role="listitem">
+                  <div class="demo-stat-num">94%</div>
+                  <div class="demo-stat-label">Top fit score</div>
+                </div>
+              </div>
+            </aside>
+
+            <!-- Main: Ranked candidates -->
+            <main class="demo-main" aria-label="Ranked candidate shortlist">
+              <div class="demo-main-header">
+                <div class="demo-main-title">Shortlisted candidates</div>
+                <div class="demo-main-sort" aria-label="Sorted by fit score">
+                  Sorted by fit score
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M6 2V10M6 10L3 7M6 10L9 7" stroke="#8A8590" stroke-width="1.2" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Candidate 1 -->
+              <div class="demo-candidate top" role="article" aria-label="Rank 1: Arjun Mehta, 94% fit">
+                <div class="dc-rank r1" aria-label="Rank 1">1</div>
+                <div class="dc-body">
+                  <div class="dc-name">Arjun Mehta</div>
+                  <div class="dc-title">ML Engineer · 5 yrs exp · Ex-Flipkart</div>
+                  <div class="dc-tags" role="list">
+                    <span class="dc-tag hi" role="listitem">FAISS</span>
+                    <span class="dc-tag hi" role="listitem">Retrieval systems</span>
+                    <span class="dc-tag" role="listitem">Python</span>
+                    <span class="dc-tag" role="listitem">FastAPI</span>
+                  </div>
+                  <div class="dc-reasoning" aria-label="AI reasoning">
+                    <div class="dc-reasoning-bar" aria-hidden="true"></div>
+                    Strong retrieval systems experience — built production RAG pipeline serving 2M+ queries/day. Exact
+                    match on FAISS + HNSW requirements.
+                  </div>
+                </div>
+                <div class="dc-score-col">
+                  <div class="dc-score-badge s-high" aria-label="94% fit score">94%</div>
+                  <div class="dc-score-label">Fit score</div>
+                  <div class="dc-fit-bar-wrap" aria-label="Fit bar: 94%">
+                    <div class="dc-fit-label">Evidence fit</div>
+                    <div class="dc-fit-bar">
+                      <div class="dc-fit-fill" style="width:94%" role="progressbar" aria-valuenow="94" aria-valuemin="0"
+                        aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Candidate 2 -->
+              <div class="demo-candidate" role="article" aria-label="Rank 2: Priya Nair, 87% fit">
+                <div class="dc-rank r2" aria-label="Rank 2">2</div>
+                <div class="dc-body">
+                  <div class="dc-name">Priya Nair</div>
+                  <div class="dc-title">Research Engineer · 4 yrs exp · Ex-Samsung Research</div>
+                  <div class="dc-tags" role="list">
+                    <span class="dc-tag hi" role="listitem">Cross-encoder</span>
+                    <span class="dc-tag hi" role="listitem">Semantic ranking</span>
+                    <span class="dc-tag" role="listitem">BM25</span>
+                    <span class="dc-tag" role="listitem">PyTorch</span>
+                  </div>
+                  <div class="dc-reasoning" aria-label="AI reasoning">
+                    <div class="dc-reasoning-bar" aria-hidden="true"></div>
+                    High semantic fit with ranking pipelines. Published reranking research at ECIR 2023. Good recruiter
+                    responsiveness in prior outreach.
+                  </div>
+                </div>
+                <div class="dc-score-col">
+                  <div class="dc-score-badge s-mid" aria-label="87% fit score">87%</div>
+                  <div class="dc-score-label">Fit score</div>
+                  <div class="dc-fit-bar-wrap" aria-label="Fit bar: 87%">
+                    <div class="dc-fit-label">Evidence fit</div>
+                    <div class="dc-fit-bar">
+                      <div class="dc-fit-fill lav" style="width:87%" role="progressbar" aria-valuenow="87"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Candidate 3 -->
+              <div class="demo-candidate" role="article" aria-label="Rank 3: Sameer Khan, 81% fit">
+                <div class="dc-rank r3" aria-label="Rank 3">3</div>
+                <div class="dc-body">
+                  <div class="dc-name">Sameer Khan</div>
+                  <div class="dc-title">Data Scientist · 3 yrs exp · Razorpay</div>
+                  <div class="dc-tags" role="list">
+                    <span class="dc-tag hi" role="listitem">SentenceTransformers</span>
+                    <span class="dc-tag" role="listitem">NLP</span>
+                    <span class="dc-tag" role="listitem">FastAPI</span>
+                    <span class="dc-tag" role="listitem">Python</span>
+                  </div>
+                  <div class="dc-reasoning" aria-label="AI reasoning">
+                    <div class="dc-reasoning-bar" aria-hidden="true"></div>
+                    Solid NLP and embedding model experience. Built internal search ranking at Razorpay. Less direct
+                    evidence on FAISS at scale.
+                  </div>
+                </div>
+                <div class="dc-score-col">
+                  <div class="dc-score-badge s-mid" aria-label="81% fit score">81%</div>
+                  <div class="dc-score-label">Fit score</div>
+                  <div class="dc-fit-bar-wrap" aria-label="Fit bar: 81%">
+                    <div class="dc-fit-label">Evidence fit</div>
+                    <div class="dc-fit-bar">
+                      <div class="dc-fit-fill lav" style="width:81%" role="progressbar" aria-valuenow="81"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         EXPLAINABILITY
+    ═══════════════════════════════════════ -->
+    <section id="explainability" aria-labelledby="explain-heading">
+      <div class="container">
+        <div class="section-header">
+          <p class="label-tag reveal">Why Trust It</p>
+          <h2 class="display-lg reveal reveal-delay-1" id="explain-heading">Every score has a story.<br>Every shortlist
+            is grounded.</h2>
+          <p class="body-lg reveal reveal-delay-2">Eklavya AI doesn't hand you a number. It shows you the evidence that
+            produced it.</p>
+        </div>
+
+        <div class="explain-grid">
+          <div class="explain-card reveal reveal-delay-1" role="article">
+            <div class="explain-icon lime" aria-hidden="true">
+              <svg viewBox="0 0 22 22" fill="none">
+                <path d="M4 14L8 8L12 11L16 6" stroke="#6F8B20" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <circle cx="17" cy="5.5" r="2" fill="#D6EA72" />
+              </svg>
+            </div>
+            <h3>Proof-of-work scoring</h3>
+            <p>Scores are built from specific candidate outputs — shipped projects, published work, and demonstrated
+              skills — not just keyword frequency on a resume.</p>
+          </div>
+
+          <div class="explain-card reveal reveal-delay-2" role="article">
+            <div class="explain-icon lav" aria-hidden="true">
+              <svg viewBox="0 0 22 22" fill="none">
+                <circle cx="11" cy="11" r="7" stroke="#9B8FD0" stroke-width="1.4" />
+                <path d="M8 11H14M11 8V14" stroke="#9B8FD0" stroke-width="1.3" stroke-linecap="round" />
+              </svg>
+            </div>
+            <h3>Candidate-centric RAG</h3>
+            <p>Knowledge is chunked and indexed per candidate. Retrieval surfaces the most relevant evidence for each
+              specific JD, not a generic profile summary.</p>
+          </div>
+
+          <div class="explain-card dark-card reveal reveal-delay-1" role="article"
+            aria-label="Hybrid retrieval scoring breakdown">
+            <div>
+              <div class="explain-icon dark-icon" aria-hidden="true" style="background:rgba(214,234,114,0.1);">
+                <svg viewBox="0 0 22 22" fill="none">
+                  <rect x="3" y="3" width="7" height="7" rx="2" stroke="#D6EA72" stroke-width="1.4" />
+                  <rect x="12" y="3" width="7" height="7" rx="2" stroke="#C7BDF4" stroke-width="1.4" />
+                  <rect x="3" y="12" width="7" height="7" rx="2" stroke="#C7BDF4" stroke-width="1.4" />
+                  <rect x="12" y="12" width="7" height="7" rx="2" stroke="#D6EA72" stroke-width="1.4" />
+                </svg>
+              </div>
+              <h3>Hybrid retrieval + reranking</h3>
+              <p>BM25 captures exact term matches. Semantic search captures meaning and context. A cross-encoder
+                reranker fuses both signals for the final score. No single method dominates; the best evidence wins.</p>
+            </div>
+            <div class="explain-visual" aria-label="Score breakdown visualization">
+              <div class="score-bar-item">
+                <div class="score-bar-top">
+                  <span class="score-bar-name">Semantic similarity</span>
+                  <span class="score-bar-val">91%</span>
+                </div>
+                <div class="score-bar-track" role="progressbar" aria-label="Semantic similarity: 91%" aria-valuenow="91"
+                  aria-valuemin="0" aria-valuemax="100">
+                  <div class="score-bar-fill" style="width:0%" data-target="91"></div>
+                </div>
+              </div>
+              <div class="score-bar-item">
+                <div class="score-bar-top">
+                  <span class="score-bar-name">BM25 keyword fit</span>
+                  <span class="score-bar-val">78%</span>
+                </div>
+                <div class="score-bar-track" role="progressbar" aria-label="BM25 keyword fit: 78%" aria-valuenow="78"
+                  aria-valuemin="0" aria-valuemax="100">
+                  <div class="score-bar-fill lav" style="width:0%" data-target="78"></div>
+                </div>
+              </div>
+              <div class="score-bar-item">
+                <div class="score-bar-top">
+                  <span class="score-bar-name">Cross-encoder rerank</span>
+                  <span class="score-bar-val">94%</span>
+                </div>
+                <div class="score-bar-track" role="progressbar" aria-label="Cross-encoder rerank: 94%"
+                  aria-valuenow="94" aria-valuemin="0" aria-valuemax="100">
+                  <div class="score-bar-fill" style="width:0%" data-target="94"></div>
+                </div>
+              </div>
+              <div class="score-bar-item">
+                <div class="score-bar-top">
+                  <span class="score-bar-name">Behavioral signals</span>
+                  <span class="score-bar-val">85%</span>
+                </div>
+                <div class="score-bar-track" role="progressbar" aria-label="Behavioral signals: 85%" aria-valuenow="85"
+                  aria-valuemin="0" aria-valuemax="100">
+                  <div class="score-bar-fill lav" style="width:0%" data-target="85"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="explain-card reveal reveal-delay-3" role="article">
+            <div class="explain-icon lav" aria-hidden="true">
+              <svg viewBox="0 0 22 22" fill="none">
+                <path d="M11 4L14 9H18L14.8 12L16.2 17L11 14L5.8 17L7.2 12L4 9H8L11 4Z" stroke="#9B8FD0"
+                  stroke-width="1.4" stroke-linejoin="round" />
+              </svg>
+            </div>
+            <h3>Behavioral signals</h3>
+            <p>Recruiter responsiveness, prior outreach history, and engagement patterns surface candidates who are not
+              only capable but genuinely reachable and motivated.</p>
+          </div>
+
+          <div class="explain-card reveal reveal-delay-4" role="article">
+            <div class="explain-icon lime" aria-hidden="true">
+              <svg viewBox="0 0 22 22" fill="none">
+                <path d="M5 11H17M11 5V17" stroke="#6F8B20" stroke-width="1.5" stroke-linecap="round" />
+                <rect x="3" y="3" width="16" height="16" rx="4" stroke="#6F8B20" stroke-width="1.4" />
+              </svg>
+            </div>
+            <h3>Grounded evidence</h3>
+            <p>Every reasoning snippet is traced back to a specific chunk of candidate data. Recruiters can read the
+              source, not just the conclusion.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         TECH STACK
+    ═══════════════════════════════════════ -->
+    <section id="tech-stack" aria-labelledby="tech-heading"
+      style="padding: var(--section-py) 0; border-top: 1px solid var(--border);">
+      <div class="container">
+        <div class="tech-layout">
+          <div class="tech-left">
+            <p class="label-tag reveal" style="margin-bottom:14px;">Under the Hood</p>
+            <h2 class="display-md reveal reveal-delay-1" id="tech-heading">Built on a rigorous,<br>composable stack.
+            </h2>
+            <p class="reveal reveal-delay-2">Eklavya AI is not wrapped around a generic LLM. Every component is selected
+              for precision in information retrieval and scoring — the same techniques used in production search
+              systems.</p>
+            <div class="tech-arch-badge reveal reveal-delay-3"
+              aria-label="Architecture type: Candidate-centric RAG pipeline">
+              Candidate-centric RAG pipeline
+            </div>
+          </div>
+
+          <div class="tech-grid reveal reveal-delay-1">
+
+            <div class="tech-card featured" role="article" aria-label="Candidate-centric RAG architecture">
+              <div class="tech-card-icon" style="background:rgba(214,234,114,0.12);" aria-hidden="true">🧠</div>
+              <div class="tech-card-name" style="color:#fff;">Candidate-centric RAG</div>
+              <div class="tech-card-desc" style="color:var(--dark-muted);">Each candidate has their own indexed
+                knowledge base. Retrieval pulls the most relevant evidence per JD — not a generic profile digest.</div>
+            </div>
+
+            <div class="tech-card" role="article" aria-label="XGBoost Blending">
+              <div class="tech-card-icon" style="background:rgba(59,130,246,0.1);" aria-hidden="true">🌲</div>
+              <div class="tech-card-name">XGBoost Scoring</div>
+              <div class="tech-card-desc">Advanced gradient-boosted trees layer to calibrate heuristics with behavioral signals.</div>
+            </div>
+
+            <div class="tech-card" role="article" aria-label="Reciprocal Rank Fusion">
+              <div class="tech-card-icon" style="background:rgba(16,185,129,0.1);" aria-hidden="true">🧬</div>
+              <div class="tech-card-name">RRF Fusion</div>
+              <div class="tech-card-desc">Math-backed hybrid fusion of lexical and semantic vector spaces for unparalleled accuracy.</div>
+            </div>
+
+            <div class="tech-card" role="article" aria-label="SentenceTransformers">
+              <div class="tech-card-icon" style="background:rgba(199,189,244,0.12);" aria-hidden="true">🔤</div>
+              <div class="tech-card-name">SentenceTransformers</div>
+              <div class="tech-card-desc">Dense semantic embeddings for deep meaning-level candidate matching.</div>
+            </div>
+
+            <div class="tech-card" role="article" aria-label="FAISS vector search">
+              <div class="tech-card-icon" style="background:rgba(214,234,114,0.1);" aria-hidden="true">🔍</div>
+              <div class="tech-card-name">FAISS</div>
+              <div class="tech-card-desc">Approximate nearest neighbor search for fast, scalable vector retrieval.</div>
+            </div>
+
+            <div class="tech-card" role="article" aria-label="BM25 lexical search">
+              <div class="tech-card-icon" style="background:rgba(249,115,22,0.1);" aria-hidden="true">📄</div>
+              <div class="tech-card-name">BM25</div>
+              <div class="tech-card-desc">Proven lexical retrieval for exact-match term precision alongside semantic
+                search.</div>
+            </div>
+
+            <div class="tech-card" role="article" aria-label="Cross-encoder reranking">
+              <div class="tech-card-icon" style="background:rgba(199,189,244,0.12);" aria-hidden="true">⚖️</div>
+              <div class="tech-card-name">Cross-encoder Reranking</div>
+              <div class="tech-card-desc">Final-stage pairwise scoring against the JD for maximum ranking precision.
+              </div>
+            </div>
+
+            <div class="tech-card" role="article" aria-label="Explainable scoring">
+              <div class="tech-card-icon" style="background:rgba(214,234,114,0.1);" aria-hidden="true">💡</div>
+              <div class="tech-card-name">Explainable Scoring</div>
+              <div class="tech-card-desc">Every output includes human-readable reasoning traced to source evidence.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         FINAL CTA
+    ═══════════════════════════════════════ -->
+    <section id="final-cta" aria-labelledby="cta-heading">
+      <div class="cta-orb cta-orb-1" aria-hidden="true"></div>
+      <div class="cta-orb cta-orb-2" aria-hidden="true"></div>
+      <div class="container">
+        <div class="cta-inner">
+          <span class="label-tag reveal">Get Started</span>
+          <h2 class="display-lg reveal reveal-delay-1" id="cta-heading">Stop guessing.<br>Start shortlisting.</h2>
+          <p class="reveal reveal-delay-2">Paste a JD, see a ranked shortlist, read the evidence. Eklavya AI gives you a
+            decision-ready candidate list — not a pile of resumes.</p>
+          <a href="#demo" class="btn-primary-dark reveal reveal-delay-3" id="final-try-demo">
+            Try Demo
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════ -->
+  <footer role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <div class="logo-mark" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M3 4L8 2L13 4V9C13 11.5 10.5 13.5 8 14C5.5 13.5 3 11.5 3 9V4Z" fill="#D6EA72" opacity="0.7" />
+            </svg>
+          </div>
+          Eklavya AI
+        </div>
+        <div class="footer-copy">© 2026 Eklavya AI. All rights reserved.</div>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#product">Product</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#demo">Demo</a>
+          <a href="mailto:hello@eklavya.ai">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ─────────────────────────────────────────
+    // SCROLL REVEAL
+    // ─────────────────────────────────────────
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ─────────────────────────────────────────
+    // SCORE BAR ANIMATION
+    // ─────────────────────────────────────────
+    const barObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const fills = entry.target.querySelectorAll('.score-bar-fill[data-target]');
+          fills.forEach((fill, i) => {
+            setTimeout(() => {
+              fill.style.width = fill.dataset.target + '%';
+            }, i * 150);
+          });
+          barObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    const darkCard = document.querySelector('.explain-card.dark-card');
+    if (darkCard) barObserver.observe(darkCard);
+
+    // ─────────────────────────────────────────
+    // NAVBAR SCROLL EFFECT
+    // ─────────────────────────────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    // ─────────────────────────────────────────
+    // MOBILE MENU TOGGLE
+    // ─────────────────────────────────────────
+    const hamburger = document.getElementById('hamburger-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', isOpen);
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Close mobile menu on outside click
+    document.addEventListener('click', (e) => {
+      if (!navbar.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // ─────────────────────────────────────────
+    // DEMO BUTTON — animated stat update
+    // ─────────────────────────────────────────
+    const demoBtn = document.getElementById('demo-run-btn');
+    const statCandidates = document.getElementById('stat-candidates');
+    const statTime = document.getElementById('stat-time');
+
+    if (demoBtn) {
+      let running = false;
+      demoBtn.addEventListener('click', () => {
+        if (running) return;
+        running = true;
+
+        demoBtn.textContent = '';
+        demoBtn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style="animation:spin 0.8s linear infinite">
+            <circle cx="7" cy="7" r="5" stroke="#1C1B20" stroke-width="1.5" stroke-dasharray="20" stroke-dashoffset="5" stroke-linecap="round"/>
+          </svg>
+          Ranking…
+        `;
+        demoBtn.disabled = true;
+
+        // Animate stat counters
+        let c = 0;
+        const cInterval = setInterval(() => {
+          c++;
+          statCandidates.textContent = c;
+          if (c >= 24) clearInterval(cInterval);
+        }, 55);
+
+        const times = ['0.3s', '0.6s', '0.9s', '1.2s', '1.4s'];
+        let ti = 0;
+        const tInterval = setInterval(() => {
+          statTime.textContent = times[ti++];
+          if (ti >= times.length) clearInterval(tInterval);
+        }, 240);
+
+        setTimeout(() => {
+          demoBtn.innerHTML = `
+            <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><polygon points="3,2 11,7 3,12" fill="#1C1B20"/></svg>
+            Run Ranking
+          `;
+          demoBtn.disabled = false;
+          running = false;
+        }, 1400);
+      });
+    }
+
+    // ─────────────────────────────────────────
+    // SPIN KEYFRAME (for loading icon)
+    // ─────────────────────────────────────────
+    const style = document.createElement('style');
+    style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+    document.head.appendChild(style);
+
+    // ─────────────────────────────────────────
+    // SMOOTH ANCHOR SCROLL
+    // ─────────────────────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          const top = target.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

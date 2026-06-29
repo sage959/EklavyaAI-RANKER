@@ -1,0 +1,63 @@
+team_name: "TIER:3"  
+
+primary_contact:
+  name: "Siddharth Singh"
+  email: "[siddharthsingh2003lucknow@gmail.com]  
+  phone: "+91-8303526959
+
+team_members:
+  - name: "Siddharth Singh"
+    email: "siddharthsingh2003lucknow@gmail.com"
+    role: "TEAM LEAD [SOLO]"
+
+
+# Code and reproducibility
+github_repo: "https://github.com/sage959/EklavyaAI-RANKER"
+sandbox_link: "https://huggingface.co/spaces/sage959/eklavya-ai"
+# platform is HuggingFace Spaces
+
+reproduce_command: "python run_pipeline.py --precomputed"
+
+# The single command that produces submission.csv from candidates.jsonl.
+# Should run end-to-end within 5 minutes on CPU with 16GB RAM and no network.
+
+
+# Compute environment
+compute:
+  platform: "Local Windows Box"                 # Or: "AWS EC2 c5.4xlarge", "Local Linux box", etc.
+  cpu_cores: 8                                  # Number of CPU cores used
+  ram_gb: 16                                    # Available RAM in GB
+  python_version: "3.11"                        # python --version
+  os: "Windows 11"                              # Or "Ubuntu 22.04 LTS", etc.
+  uses_gpu_for_inference: false                 # Must be false — see compute constraints
+  has_network_during_ranking: false             # Must be false — no API calls during ranking
+  pre_computation_required: true                # true if you pre-compute embeddings or train models offline
+  pre_computation_time_minutes: 3               # Approximate time taken by FAISS/BM25 indexing
+
+
+# AI tools declaration
+ai_tools_used:
+  - "Gemini"
+  - "Claude"
+  
+ai_usage_summary: |
+  Used Gemini as an agentic AI assistant via Antigravity IDE to build, debug, and optimize the ranking pipeline, including resolving floating-point non-determinism, threading issues, and implementing the UI. Used Claude Opus 4.6 (Thinking) for architectural planning and system design decisions.
+
+
+# Approach summary
+methodology_summary: |
+  A robust multi-stage ranking pipeline ensuring strict Stage 3 determinism.
+  1. Lexical & Semantic Retrieval: Combines BM25 and a local FAISS-based SentenceTransformer index, fused using Reciprocal Rank Fusion (RRF) and Weighted Norms. 
+  2. Reranking: Uses a lightweight Cross-Encoder model to deeply score candidate-JD pairs.
+  3. Feature Engineering: Extracts 30+ numeric signals spanning production depth, technical relevance, career history, and behavioral traits, with severe negative penalties for contradictions or API-wrapper-only experience.
+  4. Scoring: Blends a strict rule-based heuristic score with a lightweight XGBoost model prediction.
+  Determinism is guaranteed by strictly seeding Numpy/PyTorch, disabling multi-threaded BLAS operations during inference, and enforcing candidate_id tie-breaking across all ranking stages.
+
+
+# Declarations
+declarations:
+  read_submission_spec: true        # I have read submission_spec.md in full
+  code_is_original_work: true       # My code is my original work
+  no_collusion: true                # I have not coordinated my submission with other teams
+  honeypot_check_done: false        # I explicitly checked for honeypots in my ranking
+  reproduction_tested: true         # I have tested that my reproduce_command runs end-to-end
