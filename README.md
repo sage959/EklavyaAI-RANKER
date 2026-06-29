@@ -4,6 +4,10 @@ Eklavya AI is a deterministic, multi-stage hybrid retrieval and ranking pipeline
 Our pipeline fuses Lexical (BM25) and Semantic (FAISS) retrieval, cross-encoder reranking, XGBoost scoring, and rigorous proof-of-work contradiction checks to automatically parse resumes and output highly accurate, explainable candidate rankings.
 
 ---
+### ⚠️ IMPORTANT: First-Time Setup
+Before running the pipeline, you must generate the pre-computed indices:
+
+               python precompute_index.py
 
 ## Quick Start: Generate the CSV Submission
 To reproduce our ranking results and generate the final `TIER3.csv` submission file, you only need to run a single command. 
