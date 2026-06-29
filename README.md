@@ -21,7 +21,7 @@ To use the interactive Ranking Studio frontend, you must first start the backend
 Step 1: Start the Backend Server
 Open your terminal in the project folder and run the following command to start the API:
                
-               uvicorn api.main:app --port 8000
+               python -m uvicorn api.main:app --port 8000
 
 Step 2: Open the Landing Page
 Once the server is running, double-click the index.html file to open the landing page in your web browser.
